@@ -20,6 +20,10 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { parse } from "path";
+import { useCreateProposal } from "@/hooks/contract-mutation";
+import { useWallet } from "@/hooks/wallet";
+import { useQueryClient } from "@tanstack/react-query";
+import { error } from "console";
 export const ProposalForm = () => {
   //   const {
   //     register,
@@ -33,7 +37,7 @@ export const ProposalForm = () => {
   //       expires: "",
   //     },
   //   });
-
+  const queryClient = useQueryClient();
   const form = useForm<ProposalFormValues>({
     resolver: zodResolver(proposalSchema),
     defaultValues: {
@@ -48,6 +52,11 @@ export const ProposalForm = () => {
     control: form.control,
     name: "option", // Nome del campo dinamico
   });
+  const { wallet, connectKeplr } = useWallet();
+  const { mutate: createProposal, isPending: creating } = useCreateProposal(
+    wallet?.address
+  );
+
   const onSubmit = (data: ProposalFormValues) => {
     const parsed = proposalSchema.safeParse(data);
     if (!parsed.success) {
@@ -56,14 +65,27 @@ export const ProposalForm = () => {
     }
 
     const formattedExpires = new Date(data.expires).toISOString();
+    const f = new Date(formattedExpires).getTime() * 1_000_000;
+    const string_date = String(f);
 
-    const formattedData = {
+    const initMsg = {
       ...data,
-      expires: { at_time: new Date(formattedExpires).getTime() * 1_000_000 }, // Converte in nanosecondi
+      expires: { at_time: string_date },
     };
-
-    console.log("Formatted data:", formattedData);
-    console.log("Formatted data:", formattedData);
+    createProposal(
+      { initMsg },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["proposal_by_proposer", wallet?.address],
+          });
+          console.log("ok");
+        },
+        onError: (error) => {
+          console.error(error);
+        },
+      }
+    );
     // Invia i dati al contratto (ad esempio tramite CosmJS)
   };
   return (
