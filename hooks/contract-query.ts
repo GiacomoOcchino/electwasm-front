@@ -24,6 +24,7 @@ export const useProposalByProposerQuery = (proposer: string | undefined) => {
   const options = queryProposalByProposerOptions(proposer);
   return useQuery(options);
 };
+// DONE
 export const useContractStatusQuery = () => {
   const options = queryContractStatusOptions();
   return useQuery(options);
@@ -55,11 +56,7 @@ export const useProposalRunningQuery = (
   return useQuery(options);
 };
 
-export const useVotersQuery = (
-  contractAddress: string,
-  id: number,
-  enabled: boolean
-) => {
-  const options = queryVotersOptions(contractAddress, id, enabled);
+export const useVotersQuery = (id: number) => {
+  const options = queryVotersOptions(id);
   return useQuery(options);
 };

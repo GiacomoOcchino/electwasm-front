@@ -6,6 +6,7 @@ import {
   ProposalResult,
   ProposalsByProposerResponse,
   StatusResponse,
+  VotersResponse,
   Votes,
 } from "@/types/response";
 
@@ -198,9 +199,7 @@ export const queryProposalRunningOptions = (
   enabled: !!contractAddress && enabled,
 });
 export const queryVotersOptions = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => ({
   queryKey: ["voters", id],
   queryFn: async () => {
@@ -213,7 +212,7 @@ export const queryVotersOptions = (
     const response = await fetch(
       JUNO_TESTNET_REST +
         "cosmwasm/wasm/v1/contract/" +
-        contractAddress +
+        CONTRACT_ADDRESS +
         "/smart/" +
         base64String +
         ""
@@ -223,8 +222,8 @@ export const queryVotersOptions = (
         throw new Error(text);
       });
     }
-    const result: Votes = await response.json();
+    const result: VotersResponse = await response.json();
     return result;
   },
-  enabled: !!contractAddress && enabled,
+  enabled: !!id,
 });
