@@ -4,8 +4,9 @@ export interface ProposalIdsWithTitlesResponse {
 }
 
 export interface ProposalsByProposerResponse {
-  id: number;
-  title: string;
+  data: {
+    proposals: [number, string][]; // Array di tuple [id, title]
+  };
 }
 
 export interface ProposalResponse {
@@ -32,4 +33,12 @@ export interface VotersResponse {
   allowed_voters: string[];
   pending_voters: string[];
   has_voted_voters: string[];
+}
+
+export interface StatusResponse {
+  data: {
+    admin: string;
+    commissions: string[];
+    voting_fee: number;
+  };
 }
