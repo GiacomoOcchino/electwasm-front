@@ -1,5 +1,6 @@
 import {
   queryAllProposalIdsAndTitlesOptions,
+  queryContractStatusOptions,
   queryProposalByProposerOptions,
   queryProposalOptions,
   queryProposalResultOptions,
@@ -18,16 +19,13 @@ export const useAllProposalIdsAndTitlesQuery = (
   return useQuery(options);
 };
 
-export const useProposalByProposerQuery = (
-  contractAddress: string,
-  proposer: string,
-  enabled: boolean
-) => {
-  const options = queryProposalByProposerOptions(
-    contractAddress,
-    proposer,
-    enabled
-  );
+// DONE
+export const useProposalByProposerQuery = (proposer: string | undefined) => {
+  const options = queryProposalByProposerOptions(proposer);
+  return useQuery(options);
+};
+export const useContractStatusQuery = () => {
+  const options = queryContractStatusOptions();
   return useQuery(options);
 };
 export const useProposalQuery = (
