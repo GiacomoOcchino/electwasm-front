@@ -1,6 +1,7 @@
 export interface ProposalIdsWithTitlesResponse {
-  id: number;
-  title: string;
+  data: {
+    proposals: [number, string][]
+  };
 }
 
 export interface ProposalsByProposerResponse {
@@ -9,15 +10,30 @@ export interface ProposalsByProposerResponse {
   };
 }
 
-export interface ProposalResponse {
-  id: number;
-  title: string;
-  description: string;
-  status: "open" | "closed";
-  expires: number;
-  proposer: string;
-  options: string[];
+// export interface ProposalResponse {
+//   id: number;
+//   title: string;
+//   description: string;
+//   status: "open" | "closed";
+//   expires: number;
+//   proposer: string;
+//   options: string[];
+// }
+
+export interface ProposalDetailsResponse {
+  data: {
+    id: number;
+    title: string;
+    description: string;
+    status: "open" | "closed";
+    expires: {
+      at_time: string; // Timestamp in formato stringa
+    };
+    proposer: string;
+    options: string[];
+  };
 }
+
 
 export interface ProposalResult {
   title: string;
