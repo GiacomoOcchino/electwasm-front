@@ -9,13 +9,8 @@ import {
 } from "@/queries/options";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const useAllProposalIdsAndTitlesQuery = (
-  contractAddress: string,
-  enabled: boolean
-) => {
-  const options = queryOptions(
-    queryAllProposalIdsAndTitlesOptions(contractAddress, enabled)
-  );
+export const useAllProposalIdsAndTitlesQuery = () => {
+  const options = queryAllProposalIdsAndTitlesOptions();
   return useQuery(options);
 };
 
@@ -30,11 +25,9 @@ export const useContractStatusQuery = () => {
   return useQuery(options);
 };
 export const useProposalQuery = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => {
-  const options = queryProposalOptions(contractAddress, id, enabled);
+  const options = queryProposalOptions(id);
   return useQuery(options);
 };
 
@@ -55,7 +48,7 @@ export const useProposalRunningQuery = (
   const options = queryProposalRunningOptions(contractAddress, id, enabled);
   return useQuery(options);
 };
-
+//DONE
 export const useVotersQuery = (id: number) => {
   const options = queryVotersOptions(id);
   return useQuery(options);

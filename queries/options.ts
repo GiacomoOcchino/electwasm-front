@@ -1,8 +1,8 @@
 import { CONTRACT_ADDRESS, JUNO_TESTNET_REST } from "@/constant";
 import useStore from "@/store/store";
 import {
+  ProposalDetailsResponse,
   ProposalIdsWithTitlesResponse,
-  ProposalResponse,
   ProposalResult,
   ProposalsByProposerResponse,
   StatusResponse,
@@ -20,17 +20,14 @@ export const contractOption = {
   },
 };
 
-export const queryAllProposalIdsAndTitlesOptions = (
-  contractAddress: string,
-  enabled: boolean
-) => ({
-  queryKey: ["all_proposal_ids", contractAddress],
+export const queryAllProposalIdsAndTitlesOptions = () => ({
+  queryKey: ["all_proposal_ids"],
   queryFn: async () => {
     /* base64 of {"all_proposal_ids":{}} */
     const response = await fetch(
       JUNO_TESTNET_REST +
         "cosmwasm/wasm/v1/contract/" +
-        contractAddress +
+        CONTRACT_ADDRESS +
         "/smart/eyJhbGxfcHJvcG9zYWxfaWRzIjp7fX0="
     );
     if (!response.ok) {
@@ -39,9 +36,8 @@ export const queryAllProposalIdsAndTitlesOptions = (
       });
     }
     const result: ProposalIdsWithTitlesResponse = await response.json();
-    return result;
+    return result.data;
   },
-  enabled: !!contractAddress && enabled,
 });
 
 export const queryProposalByProposerOptions = (
@@ -105,22 +101,21 @@ export const queryContractStatusOptions = () => ({
 });
 
 export const queryProposalOptions = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => ({
   queryKey: ["proposal", id],
   queryFn: async () => {
     /* base64 of {"proposal":{proposal_id:proposer}} */
     const jsonString = JSON.stringify({
-      proposal: { proposal_id: id },
+      proposal: { proposal_id: id*1 },
     });
     const base64String = window.btoa(jsonString);
-
+    console.log(jsonString);
+    console.log(base64String);
     const response = await fetch(
       JUNO_TESTNET_REST +
         "cosmwasm/wasm/v1/contract/" +
-        contractAddress +
+        CONTRACT_ADDRESS +
         "/smart/" +
         base64String +
         ""
@@ -130,10 +125,10 @@ export const queryProposalOptions = (
         throw new Error(text);
       });
     }
-    const result: ProposalResponse = await response.json();
-    return result;
+    const result: ProposalDetailsResponse = await response.json();
+    return result.data;
   },
-  enabled: !!contractAddress && enabled,
+  enabled: !!id,
 });
 
 export const queryProposalResultOptions = (
@@ -198,9 +193,7 @@ export const queryProposalRunningOptions = (
   },
   enabled: !!contractAddress && enabled,
 });
-export const queryVotersOptions = (
-  id: number,
-) => ({
+export const queryVotersOptions = (id: number) => ({
   queryKey: ["voters", id],
   queryFn: async () => {
     /* base64 of {"voters":{proposal_id:proposer}} */
