@@ -36,16 +36,14 @@ export const useProposalResultQuery = (
   id: number,
   enabled: boolean
 ) => {
-  const options = queryProposalResultOptions(contractAddress, id, enabled);
+  const options = queryProposalResultOptions(id);
   return useQuery(options);
 };
 
 export const useProposalRunningQuery = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => {
-  const options = queryProposalRunningOptions(contractAddress, id, enabled);
+  const options = queryProposalRunningOptions(id);
   return useQuery(options);
 };
 //DONE

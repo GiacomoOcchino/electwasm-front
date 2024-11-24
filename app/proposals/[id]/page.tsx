@@ -28,6 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import VotingPieChart from "@/components/pie-chart";
 
 // Schema per validare il form
 const voteSchema = z.object({
@@ -192,6 +193,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
           </div>
         </form>
       </Form>
+      <VotingPieChart id={id}/>
       <div className="mt-6">
         <Button
           onClick={handleRequestAccess}

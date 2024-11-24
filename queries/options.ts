@@ -132,9 +132,7 @@ export const queryProposalOptions = (
 });
 
 export const queryProposalResultOptions = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => ({
   queryKey: ["winner", id],
   queryFn: async () => {
@@ -147,7 +145,7 @@ export const queryProposalResultOptions = (
     const response = await fetch(
       JUNO_TESTNET_REST +
         "cosmwasm/wasm/v1/contract/" +
-        contractAddress +
+        CONTRACT_ADDRESS +
         "/smart/" +
         base64String +
         ""
@@ -160,25 +158,26 @@ export const queryProposalResultOptions = (
     const result: ProposalResult = await response.json();
     return result;
   },
-  enabled: !!contractAddress && enabled,
+  enabled: !!CONTRACT_ADDRESS,
 });
 export const queryProposalRunningOptions = (
-  contractAddress: string,
   id: number,
-  enabled: boolean
 ) => ({
   queryKey: ["running", id],
   queryFn: async () => {
     /* base64 of {"running":{proposal_id:id}} */
+    console.log("here",id);
+
     const jsonString = JSON.stringify({
-      running: { proposal_id: id },
+      running: { proposal_id: Number(id) },
     });
+    console.log("here",jsonString);
     const base64String = window.btoa(jsonString);
 
     const response = await fetch(
       JUNO_TESTNET_REST +
         "cosmwasm/wasm/v1/contract/" +
-        contractAddress +
+        CONTRACT_ADDRESS +
         "/smart/" +
         base64String +
         ""
@@ -189,9 +188,9 @@ export const queryProposalRunningOptions = (
       });
     }
     const result: Votes = await response.json();
-    return result;
+    return result.data;
   },
-  enabled: !!contractAddress && enabled,
+  enabled: !!CONTRACT_ADDRESS,
 });
 export const queryVotersOptions = (id: number) => ({
   queryKey: ["voters", id],

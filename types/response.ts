@@ -42,7 +42,9 @@ export interface ProposalResult {
 }
 
 export interface Votes {
+  data: {
   counts: number[];
+  }
 }
 
 export interface VotersResponse {
