@@ -1,6 +1,4 @@
 import { useVotersQuery } from '@/hooks/contract-query';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
 interface VoterManagementProps {
   proposalId: number;
 }
