@@ -17,34 +17,43 @@ interface Proposal {
   winner?: string | null;
 }
 
-
 export default function AdminPage() {
-  const {wallet, connectKeplr} = useWallet();
-  const [selectedProposal, setSelectedProposal] = useState<[number, string] | null>(null);
+  const { wallet, connectKeplr } = useWallet();
+  const [selectedProposal, setSelectedProposal] = useState<
+    [number, string] | null
+  >(null);
 
   // Query per ottenere le proposte dell'utente
   const {
     data: proposals,
     isLoading: queryLoading,
     error: queryError,
-  } = useProposalByProposerQuery(wallet?.address)
+  } = useProposalByProposerQuery(wallet?.address);
 
-  if (queryLoading) return <div>Loading...</div>;
-
+  if (queryError) return <div>Errore: {queryError.message}</div>;
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <ProposalForm />
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Le tue proposte</h2>
-      <MyProposalList
-        proposals={proposals?.proposals}
-        setSelectedProposal={setSelectedProposal}
-      />
-
-      {selectedProposal && (
-        <VoterManagement proposalId={selectedProposal[0]} />
+      {queryLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <MyProposalList
+          proposals={proposals?.proposals}
+          setSelectedProposal={setSelectedProposal}
+        />
       )}
+      {selectedProposal && (
+        <div>
+          <h3 className="text-lg font-semibold">Proposta Selezionata:</h3>
+          <p>ID: {selectedProposal[0]}</p>
+          <p>Titolo: {selectedProposal[1]}</p>
+          {/* Esegui altre azioni */}
+        </div>
+      )}
+      {selectedProposal && <VoterManagement proposalId={selectedProposal[0]} />}
     </div>
   );
 }
