@@ -10,11 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useProposalQuery } from "@/hooks/contract-query";
+import { useProposalQuery, useVotersQuery } from "@/hooks/contract-query";
 // import { useVoteMutation } from "@/hooks/contract-mutation";
 import { z } from "zod";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import { useAskToJoinProposal } from "@/hooks/contract-mutation";
+import {
+  useAskToJoinProposal,
+  useVoteProposal,
+} from "@/hooks/contract-mutation";
 import useStore from "@/store/store";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -44,6 +47,10 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
     id
   );
 
+  const { mutate: voteProposal, isPending: voting } = useVoteProposal(
+    wallet?.address,
+    id
+  );
   const form = useForm<VoteFormValues>({
     resolver: zodResolver(voteSchema),
   });
@@ -56,6 +63,11 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
     },
   });
 
+  // const {
+  //   data: voters,
+  //   isLoading: queryVotersLoading,
+  //   error: queryVotersError,
+  // } = useVotersQuery(id)
   const handleRequestAccess = () => {
     askToJoin(undefined, {
       onSuccess: () => {
@@ -75,10 +87,23 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
 
   const onSubmit = (data: VoteFormValues) => {
     const parsed = voteSchema.safeParse(data);
+    console.log("voto", parsed);
+    console.log("voto", parsed);
     if (!parsed.success) {
       console.error("Validation error", parsed.error);
       return;
     }
+    voteProposal(data.option, {
+      onSuccess: () => {
+        // queryClient.invalidateQueries({
+        //   queryKey: ["proposal_by_proposer", wallet?.address],
+        // });
+        console.log("ok");
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
 
     // const formattedExpires = new Date(data.expires).toISOString();
     // const f = new Date(formattedExpires).getTime() * 1_000_000;
@@ -138,7 +163,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
                         <FormControl key={index}>
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem
-                              value={option}
+                              value={index.toString()}
                               id={`option-${index}`}
                             />
                             {/* <label
