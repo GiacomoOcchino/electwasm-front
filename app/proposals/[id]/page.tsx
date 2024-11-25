@@ -132,68 +132,132 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   };
   return (
     <MaxWidthWrapper>
-      <h1 className="text-3xl font-bold mb-4">{proposal?.title}</h1>
+      <h1 className="text-xl md:text-3xl font-bold mb-4">{proposal?.title}</h1>
       <p className="mb-4">{proposal?.description}</p>
-      <div className="flex flex-col gap-4">
-        <p>Status: {proposal?.status}</p>
-        <p>
-          Expires:{" "}
-          {new Date(
-            Number(proposal?.expires.at_time) / 1_000_000
-          ).toLocaleString()}
-        </p>
-        <p>Proposer: {proposal?.proposer}</p>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
-          <FormField
-            control={form.control}
-            name="option"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Select an option:</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    // value={selectedOption}
-                    // onValueChange={(value) => setValue("option", value)}
-                    onValueChange={field.onChange}
-                    className="flex flex-col space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      {proposal?.options.map((option, index) => (
-                        <FormControl key={index}>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem
-                              value={index.toString()}
-                              id={`option-${index}`}
-                            />
-                            {/* <label
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <p>
+            Status:
+            <span
+              className={`${
+                proposal?.status == "open" ? "bg-green-500" : "bg-red-500"
+              } p-1 font-bold rounded-lg`}
+            >
+              {proposal?.status}
+            </span>
+          </p>
+          <p>
+            Expires:{" "}
+            {new Date(
+              Number(proposal?.expires.at_time) / 1_000_000
+            ).toLocaleString()}
+          </p>
+          <p>Proposer: {proposal?.proposer}</p>
+          <div className="hidden md:block">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
+                <FormField
+                  control={form.control}
+                  name="option"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Select an option:</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          // value={selectedOption}
+                          // onValueChange={(value) => setValue("option", value)}
+                          onValueChange={field.onChange}
+                          className="flex flex-col space-y-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            {proposal?.options.map((option, index) => (
+                              <FormControl key={index}>
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem
+                                    value={index.toString()}
+                                    id={`option-${index}`}
+                                  />
+                                  {/* <label
                               htmlFor={`option-${index}`}
                               className="text-sm"
                             >
                               {option}
                             </label> */}
-                            <FormLabel className="font-normal">
-                              {option}
-                            </FormLabel>
-                          </div>
-                        </FormControl>
-                      ))}
-                      <FormMessage />
+                                  <FormLabel className="font-normal">
+                                    {option}
+                                  </FormLabel>
+                                </div>
+                              </FormControl>
+                            ))}
+                            <FormMessage />
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
                     </FormItem>
-                  </RadioGroup>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="space-y-4 mt-2">
-            <Button type="submit" className=" w-full">
-              Submit Vote
-            </Button>
+                  )}
+                />
+                <div className="space-y-4 mt-2">
+                  <Button type="submit" className=" w-full">
+                    Submit Vote
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
-        </form>
-      </Form>
-      <VotingPieChart id={id}/>
+        </div>
+        <VotingPieChart id={id} />
+      </div>
+      <div className="md:hidden">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
+            <FormField
+              control={form.control}
+              name="option"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Select an option:</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      // value={selectedOption}
+                      // onValueChange={(value) => setValue("option", value)}
+                      onValueChange={field.onChange}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        {proposal?.options.map((option, index) => (
+                          <FormControl key={index}>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem
+                                value={index.toString()}
+                                id={`option-${index}`}
+                              />
+                              {/* <label
+                              htmlFor={`option-${index}`}
+                              className="text-sm"
+                            >
+                              {option}
+                            </label> */}
+                              <FormLabel className="font-normal">
+                                {option}
+                              </FormLabel>
+                            </div>
+                          </FormControl>
+                        ))}
+                        <FormMessage />
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="space-y-4 mt-2">
+              <Button type="submit" className=" w-full">
+                Submit Vote
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
       <div className="mt-6">
         <Button
           onClick={handleRequestAccess}

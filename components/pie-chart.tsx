@@ -5,32 +5,28 @@ import { useProposalRunningQuery } from "@/hooks/contract-query";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const VotingPieChart = ({id}:{id: number}) => {
+const VotingPieChart = ({ id }: { id: number }) => {
   const [counts, setCounts] = useState<number[]>([]);
-  const [labels, setLabels] = useState<string[]>([
-    "Option 1",
-    "Option 2",
-    "Option 3",
-  ]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [colors, setColors] = useState<string[]>([]);
   const { data: proposal, isLoading, error } = useProposalRunningQuery(id);
+
+  // Genera colori casuali
+  const generateColors = (num: number) => {
+    const randomColor = () =>
+      `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0")}`;
+    return Array.from({ length: num }, () => randomColor());
+  };
   // Recupera i dati della query
   useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch("http://localhost:4000/vote-counts"); // Sostituisci con la tua API
-    //     const data = await response.json();
-    //     setCounts(data.data.counts);
-    //   } catch (error) {
-    //     console.error("Errore durante il fetch dei dati:", error);
-    //   }
-    // };
-    if (proposal) setCounts(proposal?.counts);
-
-    // fetchData();
-
-    // Aggiorna periodicamente
-    // const interval = setInterval(fetchData, 5000); // Aggiorna ogni 5 secondi
-    // return () => clearInterval(interval);
+    if (proposal) {
+      setCounts(proposal.counts);
+      // Aggiorna etichette e colori in base ai dati
+      setLabels(proposal.counts.map((_, index) => `Option ${index + 1}`));
+      setColors(generateColors(proposal.counts.length));
+    }
   }, [proposal]);
 
   // Configurazione del grafico
@@ -39,16 +35,24 @@ const VotingPieChart = ({id}:{id: number}) => {
     datasets: [
       {
         data: counts,
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        backgroundColor: colors,
+        hoverBackgroundColor: colors.map((color) => color + "AA"), // Colori con trasparenza per hover
       },
     ],
   };
+  // Controllo se ci sono voti validi
+  const hasVotes = counts.some((count) => count > 0);
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <h2 className="text-center text-lg font-bold mb-4">Voting Results</h2>
-      <Doughnut data={data} />
+    <div className="max-w-sm mx-auto max-h-[300px]">
+      <h2 className="text-center text-lg font-bold mb-4">Real Time Results</h2>
+      {hasVotes ? (
+        <Doughnut data={data} />
+      ) : (
+        <div className="text-center text-gray-500">
+          Nessun voto disponibile. Attendi che i voti vengano registrati.
+        </div>
+      )}
     </div>
   );
 };
