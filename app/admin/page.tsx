@@ -8,6 +8,7 @@ import { useWallet } from "@/hooks/wallet";
 import { useProposalByProposerQuery } from "@/hooks/contract-query";
 import MyProposalList from "@/components/my-proposal-list";
 import { useCreateProposal } from "@/hooks/contract-mutation";
+import MaxWidthWrapper from "@/components/max-width-wrapper";
 
 // Tipo per la proposta
 interface Proposal {
@@ -32,28 +33,30 @@ export default function AdminPage() {
 
   if (queryError) return <div>Errore: {queryError.message}</div>;
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <ProposalForm />
+    <MaxWidthWrapper>
+        <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+        <ProposalForm />
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">Le tue proposte</h2>
-      {queryLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <MyProposalList
-          proposals={proposals?.proposals}
-          setSelectedProposal={setSelectedProposal}
-        />
-      )}
-      {selectedProposal && (
-        <div>
-          <h3 className="text-lg font-semibold">Proposta Selezionata:</h3>
-          <p>ID: {selectedProposal[0]}</p>
-          <p>Titolo: {selectedProposal[1]}</p>
-          {/* Esegui altre azioni */}
-        </div>
-      )}
-      {selectedProposal && <VoterManagement proposalId={selectedProposal[0]} />}
-    </div>
+        <h2 className="text-xl font-semibold mt-6 mb-2">Le tue proposte</h2>
+        {queryLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <MyProposalList
+            proposals={proposals?.proposals}
+            setSelectedProposal={setSelectedProposal}
+          />
+        )}
+        {selectedProposal && (
+          <div>
+            <h3 className="text-lg font-semibold">Proposta Selezionata:</h3>
+            <p>ID: {selectedProposal[0]}</p>
+            <p>Titolo: {selectedProposal[1]}</p>
+            {/* Esegui altre azioni */}
+          </div>
+        )}
+        {selectedProposal && (
+          <VoterManagement proposalId={selectedProposal[0]} />
+        )}
+    </MaxWidthWrapper>
   );
 }

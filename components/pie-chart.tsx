@@ -44,8 +44,7 @@ const VotingPieChart = ({ id }: { id: number }) => {
   const hasVotes = counts.some((count) => count > 0);
 
   return (
-    <div className="max-w-sm mx-auto max-h-[300px]">
-      <h2 className="text-center text-lg font-bold mb-4">Real Time Results</h2>
+    <div className="flex justify-center">
       {hasVotes ? (
         <Doughnut data={data} />
       ) : (
