@@ -118,11 +118,11 @@ export const useAskToJoinProposal = (senderAddress: string | undefined, proposal
     },
   });
 };
-export const useAddToProposal = (senderAddress: string | undefined, proposal_id:number) => {
+export const useActionToProposal = (senderAddress: string | undefined, proposal_id:number) => {
   return useMutation({
-    mutationFn: async ({ addresses }: { addresses: string[] }) => {
-        console.log('qui',senderAddress);
-        console.log('qui',proposal_id);
+    mutationFn: async ({ voters }: { voters: {add:string[], rmv:string[]} }) => {
+        console.log('qui',voters.add);
+        // console.log('qui',proposal_id);
   //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
@@ -146,10 +146,10 @@ export const useAddToProposal = (senderAddress: string | undefined, proposal_id:
         gas: "2000000",
       };
       const initMsg ={
-        add:addresses,
+        add:voters.add,
         ask:"",
         proposal_id:proposal_id*1,
-        rmv:[],
+        rmv:voters.rmv,
       }
       const msg = { update_voters: initMsg };
       console.log(JSON.stringify(msg, null, 2));
@@ -168,56 +168,56 @@ export const useAddToProposal = (senderAddress: string | undefined, proposal_id:
     },
   });
 };
-export const useRemoveFromProposal = (senderAddress: string | undefined, proposal_id:number) => {
-  return useMutation({
-    mutationFn: async ({ addresses }: { addresses: string[] }) => {
-        console.log('qui',senderAddress);
-        console.log('qui',proposal_id);
-  //  return;
-      const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
+// export const useRemoveFromProposal = (senderAddress: string | undefined, proposal_id:number) => {
+//   return useMutation({
+//     mutationFn: async ({ addresses }: { addresses: string[] }) => {
+//         console.log('qui',senderAddress);
+//         console.log('qui',proposal_id);
+//   //  return;
+//       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
-      const cosmwasmClient: SigningCosmWasmClient | null =
-        await SigningCosmWasmClient.connectWithSigner(
-          JUNO_TESTNET_RPC,
-          offlineSigner
-        );
+//       const cosmwasmClient: SigningCosmWasmClient | null =
+//         await SigningCosmWasmClient.connectWithSigner(
+//           JUNO_TESTNET_RPC,
+//           offlineSigner
+//         );
 
-      if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
-      const { voting_fee } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
-      const real_fee = {
-        amount: [
-          {
-            denom: "ujuno",
-            amount: "5000", // Gas fees separate from payment
-          },
-        ],
-        gas: "2000000",
-      };
-      const initMsg ={
-        add:[],
-        ask:"",
-        proposal_id:proposal_id*1,
-        rmv:addresses,
-      }
-      const msg = { update_voters: initMsg };
-      console.log(JSON.stringify(msg, null, 2));
+//       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
+//       // Accedi allo stato dello store
+//       const { voting_fee } = useStore.getState();
+//       // Trova la commissione necessaria per questa transazione (se applicabile)
+//       const real_fee = {
+//         amount: [
+//           {
+//             denom: "ujuno",
+//             amount: "5000", // Gas fees separate from payment
+//           },
+//         ],
+//         gas: "2000000",
+//       };
+//       const initMsg ={
+//         add:[],
+//         ask:"",
+//         proposal_id:proposal_id*1,
+//         rmv:addresses,
+//       }
+//       const msg = { update_voters: initMsg };
+//       console.log(JSON.stringify(msg, null, 2));
 
-      if (senderAddress) {
-        const result = await cosmwasmClient.execute(
-          senderAddress,
-          CONTRACT_ADDRESS,
-          msg,
-          real_fee, // Puoi specificare un oggetto fee qui se necessario
-        );
-        console.table(result);
-        return result;
-      }
-      // Invia la transazione con le fee
-    },
-  });
-};
+//       if (senderAddress) {
+//         const result = await cosmwasmClient.execute(
+//           senderAddress,
+//           CONTRACT_ADDRESS,
+//           msg,
+//           real_fee, // Puoi specificare un oggetto fee qui se necessario
+//         );
+//         console.table(result);
+//         return result;
+//       }
+//       // Invia la transazione con le fee
+//     },
+//   });
+// };
 export const useVoteProposal = (senderAddress: string | undefined, proposal_id:number) => {
   return useMutation({
     mutationFn: async (vote: string) => {
