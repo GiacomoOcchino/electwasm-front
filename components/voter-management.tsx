@@ -28,7 +28,7 @@
 //   //   },
 //   // });
 
-//   // const handleAcceptVoters = (selectedVoters: string[]) => {
+//   // const handleActionToVoters = (selectedVoters: string[]) => {
 //   //   acceptVotersMutation.mutate({ proposalId, voters: selectedVoters });
 //   // };
 
@@ -61,7 +61,7 @@
 //           </label>
 //         ))}
 //       </div>
-//       {/* <button onClick={() => handleAcceptVoters(selectedVoters)} className="bg-blue-500 text-white p-2 rounded mt-2">
+//       {/* <button onClick={() => handleActionToVoters(selectedVoters)} className="bg-blue-500 text-white p-2 rounded mt-2">
 //         Accetta Votanti Selezionati
 //       </button>
 //       <button onClick={() => handleRemoveVoters(selectedVoters)} className="bg-red-500 text-white p-2 rounded mt-2">
@@ -117,7 +117,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
   };
 
   // Placeholder per la mutation di accettazione
-  const handleAcceptVoters = () => {
+  const handleActionToVoters = () => {
     console.log("Votanti accettati:", selectedToAdd);
     // Chiama la tua mutation qui
     const voters = {
@@ -249,12 +249,12 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
 
       {/* Azioni (Pulsanti per Gestire i Votanti) */}
       <div className="flex gap-4">
-        <Button variant="default" onClick={handleAcceptVoters} disabled={selectedToAdd.length === 0}>
-          Accetta Votanti Selezionati
+        <Button variant="default" onClick={handleActionToVoters} disabled={selectedToAdd.length === 0}>
+          Accetta/Rimuovi Votanti Selezionati
         </Button>
-        <Button variant="destructive" onClick={handleRemoveVoters} disabled={selectedToRemove.length === 0}>
+        {/* <Button variant="destructive" onClick={handleRemoveVoters} disabled={selectedToRemove.length === 0}>
           Rimuovi Votanti Selezionati
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -5,12 +5,12 @@ import { useProposalRunningQuery } from "@/hooks/contract-query";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const VotingPieChart = ({ id }: { id: number }) => {
+const VotingPieChart = ({ id,status }: { id: number,status:boolean }) => {
   const [counts, setCounts] = useState<number[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
-  const { data: proposal, isLoading, error } = useProposalRunningQuery(id);
-
+  const { data: proposal, isLoading, error } = useProposalRunningQuery(id,status);
+  console.log("STATUS",status);
   // Genera colori casuali
   const generateColors = (num: number) => {
     const randomColor = () =>

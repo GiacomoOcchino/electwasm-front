@@ -9,7 +9,10 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { useProposalQuery } from "@/hooks/contract-query";
+import {
+  useProposalQuery,
+  useProposalResultQuery,
+} from "@/hooks/contract-query";
 import { z } from "zod";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import {
@@ -39,7 +42,6 @@ type VoteFormValues = z.infer<typeof voteSchema>;
 const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const { id } = params;
   const { wallet } = useStore();
-
   // Query per i dettagli della proposta
   const { data: proposal, isLoading, error } = useProposalQuery(id);
   const { mutate: askToJoin, isPending: asking } = useAskToJoinProposal(
@@ -51,7 +53,12 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
     wallet?.address,
     id
   );
-
+  const isClosed = proposal?.status === "closed";
+  const {
+    data: results,
+    isResultLoading,
+    resultError,
+  } = useProposalResultQuery(id, isClosed);
   const form = useForm<VoteFormValues>({
     resolver: zodResolver(voteSchema),
     defaultValues: {
@@ -96,6 +103,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
           <h1 className="text-xl md:text-3xl font-bold">{proposal?.title}</h1>
           <Badge
             variant={proposal?.status === "open" ? "default" : "destructive"}
+            className="uppercase"
           >
             {proposal?.status}
           </Badge>
@@ -103,7 +111,8 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
         <CardContent className="space-y-4">
           <p className="text-gray-700">{proposal?.description}</p>
           <p>
-            <span className="font-semibold">Proposer:</span> {proposal?.proposer}
+            <span className="font-semibold">Proposer:</span>{" "}
+            {proposal?.proposer}
           </p>
           <p>
             <span className="font-semibold">Expires:</span>{" "}
@@ -135,7 +144,10 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
                           className="flex flex-col space-y-2"
                         >
                           {proposal?.options.map((option, index) => (
-                            <FormItem key={index} className="flex items-center space-x-3">
+                            <FormItem
+                              key={index}
+                              className="flex items-center space-x-3"
+                            >
                               <RadioGroupItem
                                 value={index.toString()}
                                 id={`option-${index}`}
@@ -152,13 +164,11 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
                   )}
                 />
                 <div className="mt-4">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={voting}
-                  >
-                    {voting ? "Submitting Vote..." : "Submit Vote"}
-                  </Button>
+                  {!isClosed && (
+                    <Button type="submit" className="w-full" disabled={voting}>
+                      {voting ? "Submitting Vote..." : "Submit Vote"}
+                    </Button>
+                  )}
                 </div>
               </form>
             </Form>
@@ -166,25 +176,37 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
         </Card>
 
         {/* Grafico per risultati */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Real Time Results</h2>
-          </CardHeader>
-          <CardContent>
-            <VotingPieChart id={id} />
-          </CardContent>
-        </Card>
+        {!isClosed ? (
+          <Card className="shadow-md">
+            <CardHeader>
+              <h2 className="text-lg font-semibold">Real Time Results</h2>
+            </CardHeader>
+            <CardContent>
+              <VotingPieChart id={id} status={isClosed} />
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="shadow-md">
+            <CardHeader>
+              <h2 className="text-lg font-semibold">Proposal Result</h2>
+            </CardHeader>
+            <CardContent>
+              <h3>{results?.winner}</h3>
+            </CardContent>
+          </Card>
+        )}
       </div>
-
-      <div className="mt-6">
-        <Button
-          onClick={handleRequestAccess}
-          disabled={asking}
-          className="w-full bg-yellow-500 text-white"
-        >
-          {asking ? "Requesting Access..." : "Request Voting Access"}
-        </Button>
-      </div>
+      {!isClosed && (
+        <div className="mt-6">
+          <Button
+            onClick={handleRequestAccess}
+            disabled={asking}
+            className="w-full bg-yellow-500 text-white"
+          >
+            {asking ? "Requesting Access..." : "Request Voting Access"}
+          </Button>
+        </div>
+      )}
     </MaxWidthWrapper>
   );
 };
