@@ -35,9 +35,11 @@ export interface ProposalDetailsResponse {
 }
 
 export interface ProposalResult {
-  title: string;
-  description: string;
-  winner: string;
+  data: {
+    title: string;
+    description: string;
+    winner: string;
+  };
 }
 
 export interface Votes {
