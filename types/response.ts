@@ -1,6 +1,6 @@
 export interface ProposalIdsWithTitlesResponse {
   data: {
-    proposals: [number, string][]
+    proposals: [number, string][];
   };
 }
 
@@ -34,7 +34,6 @@ export interface ProposalDetailsResponse {
   };
 }
 
-
 export interface ProposalResult {
   title: string;
   description: string;
@@ -43,14 +42,16 @@ export interface ProposalResult {
 
 export interface Votes {
   data: {
-  counts: number[];
-  }
+    counts: number[];
+  };
 }
 
 export interface VotersResponse {
-  allowed_voters: string[];
-  pending_voters: string[];
-  has_voted_voters: string[];
+  data: {
+    allowed_voters: string[];
+    pending_voters: string[];
+    has_voted_voters: string[];
+  };
 }
 
 export interface StatusResponse {
