@@ -13,12 +13,13 @@ import useStore from "@/store/store";
 const Navbar = () => {
   const { wallet, connectKeplr, isLoading, isAuthenticated } = useWallet();
   const [openNavigation, setOpenNavigation] = useState(false);
+  const [enabled, setEnabled] = useState(true);
   // Query per ottenere le proposte dell'utente
   const {
     data: proposals,
     isLoading: queryLoading,
     error: queryError,
-  } = useContractStatusQuery();
+  } = useContractStatusQuery(enabled);
   const toggleNavigation = () => {
     setOpenNavigation(!openNavigation);
   };
@@ -28,14 +29,20 @@ const Navbar = () => {
     setOpenNavigation(false);
   };
 
-  // const logStore = () => {
-  //   const state = useStore.getState(); // Ottieni lo stato attuale dello store
-  //   console.log("Current Store State:", state);
-  // };
-  // useEffect(() => {
-  //   logStore();
+  useEffect(() => {
+    if (proposals) {
+      setEnabled(false);
+    }
+  }, [proposals]);
 
-  // }, [])
+  const logStore = () => {
+    const state = useStore.getState(); // Ottieni lo stato attuale dello store
+    console.log("Current Store State:", state);
+  };
+  useEffect(() => {
+    logStore();
+
+  }, [])
   
   // Usa questa funzione in qualsiasi punto per verificare lo stato dello store
  
