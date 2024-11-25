@@ -70,7 +70,7 @@ export const queryProposalByProposerOptions = (
   },
   enabled: !!proposer,
 });
-export const queryContractStatusOptions = () => ({
+export const queryContractStatusOptions = (enabled: boolean) => ({
   queryKey: ["contract_status"],
   queryFn: async () => {
     /* base64 of {"status":{}} */
@@ -98,16 +98,17 @@ export const queryContractStatusOptions = () => ({
     setContractState(result.data);
     return result.data;
   },
+  enabled: !enabled,
+  staleTime: Infinity,
+  cacheTime: Infinity,
 });
 
-export const queryProposalOptions = (
-  id: number,
-) => ({
+export const queryProposalOptions = (id: number) => ({
   queryKey: ["proposal", id],
   queryFn: async () => {
     /* base64 of {"proposal":{proposal_id:proposer}} */
     const jsonString = JSON.stringify({
-      proposal: { proposal_id: id*1 },
+      proposal: { proposal_id: id * 1 },
     });
     const base64String = window.btoa(jsonString);
     console.log(jsonString);
@@ -131,14 +132,12 @@ export const queryProposalOptions = (
   enabled: !!id,
 });
 
-export const queryProposalResultOptions = (
-  id: number,
-) => ({
+export const queryProposalResultOptions = (id: number, closed: boolean) => ({
   queryKey: ["winner", id],
   queryFn: async () => {
     /* base64 of {"proposal":{proposal_id:proposer}} */
     const jsonString = JSON.stringify({
-      winner: { proposal_id: id },
+      winner: { proposal_id: Number(id) },
     });
     const base64String = window.btoa(jsonString);
 
@@ -156,22 +155,20 @@ export const queryProposalResultOptions = (
       });
     }
     const result: ProposalResult = await response.json();
-    return result;
+    return result.data;
   },
-  enabled: !!CONTRACT_ADDRESS,
+  enabled: !!CONTRACT_ADDRESS && !!closed,
 });
-export const queryProposalRunningOptions = (
-  id: number,
-) => ({
+export const queryProposalRunningOptions = (id: number, status: boolean) => ({
   queryKey: ["running", id],
   queryFn: async () => {
     /* base64 of {"running":{proposal_id:id}} */
-    console.log("here",id);
+    console.log("here", id);
 
     const jsonString = JSON.stringify({
       running: { proposal_id: Number(id) },
     });
-    console.log("here",jsonString);
+    console.log("here", jsonString);
     const base64String = window.btoa(jsonString);
 
     const response = await fetch(
@@ -190,7 +187,7 @@ export const queryProposalRunningOptions = (
     const result: Votes = await response.json();
     return result.data;
   },
-  enabled: !!CONTRACT_ADDRESS,
+  enabled: !!CONTRACT_ADDRESS && !status,
 });
 export const queryVotersOptions = (id: number) => ({
   queryKey: ["voters", id],
@@ -215,7 +212,7 @@ export const queryVotersOptions = (id: number) => ({
       });
     }
     const result: VotersResponse = await response.json();
-    return result;
+    return result.data;
   },
   enabled: !!id,
 });

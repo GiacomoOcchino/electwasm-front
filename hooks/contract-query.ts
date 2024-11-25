@@ -20,8 +20,8 @@ export const useProposalByProposerQuery = (proposer: string | undefined) => {
   return useQuery(options);
 };
 // DONE
-export const useContractStatusQuery = () => {
-  const options = queryContractStatusOptions();
+export const useContractStatusQuery = (enabled:boolean) => {
+  const options = queryContractStatusOptions(enabled);
   return useQuery(options);
 };
 export const useProposalQuery = (
@@ -32,18 +32,18 @@ export const useProposalQuery = (
 };
 
 export const useProposalResultQuery = (
-  contractAddress: string,
   id: number,
   enabled: boolean
 ) => {
-  const options = queryProposalResultOptions(id);
+  const options = queryProposalResultOptions(id,enabled);
   return useQuery(options);
 };
 
 export const useProposalRunningQuery = (
   id: number,
+  status:boolean
 ) => {
-  const options = queryProposalRunningOptions(id);
+  const options = queryProposalRunningOptions(id,status);
   return useQuery(options);
 };
 //DONE
