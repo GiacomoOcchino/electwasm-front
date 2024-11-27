@@ -108,12 +108,14 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
             {proposal?.status}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 flex flex-col">
           <p className="text-gray-700">{proposal?.description}</p>
-          <p>
-            <span className="font-semibold">Proposer:</span>{" "}
-            {proposal?.proposer}
+          <p className="font-semibold">
+            Proposer:
           </p>
+          <code className="text-sm md:text-base text-ellipsis overflow-hidden">
+            {proposal?.proposer}
+          </code>
           <p>
             <span className="font-semibold">Expires:</span>{" "}
             {new Date(
