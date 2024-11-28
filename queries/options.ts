@@ -167,8 +167,6 @@ export const queryProposalRunningOptions = (id: number, status: boolean) => ({
   queryKey: ["running", id],
   queryFn: async () => {
     /* base64 of {"running":{proposal_id:id}} */
-    console.log("here", id);
-
     const jsonString = JSON.stringify({
       running: { proposal_id: Number(id) },
     });

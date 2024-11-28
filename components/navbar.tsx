@@ -16,9 +16,9 @@ const Navbar = () => {
   const [enabled, setEnabled] = useState(true);
   // Query per ottenere le proposte dell'utente
   const {
-    data: proposals,
-    isLoading: queryLoading,
-    error: queryError,
+    data: contractStatus,
+    // isLoading: queryLoading,
+    // error: queryError,
   } = useContractStatusQuery(enabled);
   const toggleNavigation = () => {
     setOpenNavigation(!openNavigation);
@@ -30,10 +30,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (proposals) {
+    if (contractStatus) {
       setEnabled(false);
     }
-  }, [proposals]);
+  }, [contractStatus]);
 
   const logStore = () => {
     const state = useStore.getState(); // Ottieni lo stato attuale dello store
