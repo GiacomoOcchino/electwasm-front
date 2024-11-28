@@ -68,9 +68,9 @@ export function useWallet() {
     await window.keplr.enable(CHAIN_ID);
     const OfflineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
     const accounts = await OfflineSigner.getAccounts();
-    // console.table(accounts);
+    console.table(accounts);
     setWallet(accounts[0]);
-    document.cookie = "isAuthenticated=; Max-Age=0;path=/";
+    document.cookie = "isAuthenticated=true; path=/";
   };
   return { wallet, isAuthenticated, isLoading, connectKeplr };
 }
