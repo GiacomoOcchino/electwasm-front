@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import TanstackProvider from "@/providers/tanstack";
+import { NotificationProvider } from "@/components/context/notification-context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,7 +34,7 @@ export default function RootLayout({
       >
         <TanstackProvider>
           <Navbar />
-          {children}
+          <NotificationProvider>{children}</NotificationProvider>
         </TanstackProvider>
       </body>
     </html>
