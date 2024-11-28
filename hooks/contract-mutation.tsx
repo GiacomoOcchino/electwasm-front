@@ -1,15 +1,17 @@
-import {
-  CHAIN_ID,
-  CONTRACT_ADDRESS,
-  JUNO_TESTNET_REST,
-  JUNO_TESTNET_RPC,
-} from "@/constant";
-import { useMutation } from "@tanstack/react-query";
+import { CHAIN_ID, CONTRACT_ADDRESS, JUNO_TESTNET_RPC } from "@/constant";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import useStore from "@/store/store";
 
-export const useCreateProposal = (senderAddress: string | undefined) => {
+export const useCreateProposal = (
+  senderAddress: string | undefined,
+  showNotification: (
+    type: "default" | "destructive" | "running",
+    message: string
+  ) => void
+) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ initMsg }: { initMsg: object }) => {
       //   console.table('qui',initMsg);
@@ -30,7 +32,9 @@ export const useCreateProposal = (senderAddress: string | undefined) => {
         commission.includes("ujunox")
       );
       if (!payment) {
-        throw new Error("Payment of 1000 ujunox required but not found in store");
+        throw new Error(
+          "Payment of 1000 ujunox required but not found in store"
+        );
       }
       const paymentAmount = payment.split(" ")[0]; // "1000"
       const real_fee = {
@@ -65,15 +69,27 @@ export const useCreateProposal = (senderAddress: string | undefined) => {
       }
       // Invia la transazione con le fee
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["proposal_by_proposer", senderAddress],
+      });
+      showNotification("default", "Proposta creata con successo!");
+    },
+    onError: (err) => {
+      showNotification("destructive", err.message);
+    },
   });
 };
 
-export const useAskToJoinProposal = (senderAddress: string | undefined, proposal_id:number) => {
+export const useAskToJoinProposal = (
+  senderAddress: string | undefined,
+  proposal_id: number
+) => {
   return useMutation({
     mutationFn: async () => {
-        console.log('qui',senderAddress);
-        console.log('qui',proposal_id);
-  //  return;
+      console.log("qui", senderAddress);
+      console.log("qui", proposal_id);
+      //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
       const cosmwasmClient: SigningCosmWasmClient | null =
@@ -83,9 +99,6 @@ export const useAskToJoinProposal = (senderAddress: string | undefined, proposal
         );
 
       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
-      const { voting_fee } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
       const real_fee = {
         amount: [
           {
@@ -95,12 +108,12 @@ export const useAskToJoinProposal = (senderAddress: string | undefined, proposal
         ],
         gas: "2000000",
       };
-      const initMsg ={
-        add:[],
-        ask:senderAddress?.toString(),
-        proposal_id:proposal_id*1,
-        rmv:[],
-      }
+      const initMsg = {
+        add: [],
+        ask: senderAddress?.toString(),
+        proposal_id: proposal_id * 1,
+        rmv: [],
+      };
       const msg = { update_voters: initMsg };
       console.log(JSON.stringify(msg, null, 2));
 
@@ -109,21 +122,25 @@ export const useAskToJoinProposal = (senderAddress: string | undefined, proposal
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee, // Puoi specificare un oggetto fee qui se necessario
+          real_fee
         );
         console.table(result);
         return result;
       }
-      // Invia la transazione con le fee
     },
   });
 };
-export const useActionToProposal = (senderAddress: string | undefined, proposal_id:number) => {
+export const useActionToProposal = (
+  senderAddress: string | undefined,
+  proposal_id: number
+) => {
   return useMutation({
-    mutationFn: async ({ voters }: { voters: {add:string[], rmv:string[]} }) => {
-        console.log('qui',voters.add);
-        // console.log('qui',proposal_id);
-  //  return;
+    mutationFn: async ({
+      voters,
+    }: {
+      voters: { add: string[]; rmv: string[] };
+    }) => {
+      console.log("qui", voters.add);
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
       const cosmwasmClient: SigningCosmWasmClient | null =
@@ -133,9 +150,6 @@ export const useActionToProposal = (senderAddress: string | undefined, proposal_
         );
 
       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
-      const { voting_fee } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
       const real_fee = {
         amount: [
           {
@@ -145,12 +159,12 @@ export const useActionToProposal = (senderAddress: string | undefined, proposal_
         ],
         gas: "2000000",
       };
-      const initMsg ={
-        add:voters.add,
-        ask:"",
-        proposal_id:proposal_id*1,
-        rmv:voters.rmv,
-      }
+      const initMsg = {
+        add: voters.add,
+        ask: "",
+        proposal_id: proposal_id * 1,
+        rmv: voters.rmv,
+      };
       const msg = { update_voters: initMsg };
       console.log(JSON.stringify(msg, null, 2));
 
@@ -159,23 +173,26 @@ export const useActionToProposal = (senderAddress: string | undefined, proposal_
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee, // Puoi specificare un oggetto fee qui se necessario
+          real_fee 
         );
         console.table(result);
         return result;
       }
-      // Invia la transazione con le fee
+
     },
   });
 };
 
-export const useVoteProposal = (senderAddress: string | undefined, proposal_id:number) => {
+export const useVoteProposal = (
+  senderAddress: string | undefined,
+  proposal_id: number
+) => {
   return useMutation({
     mutationFn: async (vote: string) => {
-        console.log('qui',vote);
-        console.log('qui',proposal_id);
-        console.log('Number(vote)',Number(vote));
-  //  return;
+      console.log("qui", vote);
+      console.log("qui", proposal_id);
+      console.log("Number(vote)", Number(vote));
+      //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
       const cosmwasmClient: SigningCosmWasmClient | null =
@@ -197,10 +214,10 @@ export const useVoteProposal = (senderAddress: string | undefined, proposal_id:n
         ],
         gas: "2000000",
       };
-      const initMsg ={
-        vote:Number(vote),
-        proposal_id:proposal_id*1,
-      }
+      const initMsg = {
+        vote: Number(vote),
+        proposal_id: proposal_id * 1,
+      };
       const msg = { vote: initMsg };
       console.log(JSON.stringify(msg, null, 2));
 
@@ -209,7 +226,7 @@ export const useVoteProposal = (senderAddress: string | undefined, proposal_id:n
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee, 
+          real_fee
         );
         // console.table(result);
         return result;
@@ -220,7 +237,7 @@ export const useVoteProposal = (senderAddress: string | undefined, proposal_id:n
 export const useCloseProposal = (senderAddress: string | undefined) => {
   return useMutation({
     mutationFn: async (proposal_id: number) => {
-  //  return;
+      //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
 
       const cosmwasmClient: SigningCosmWasmClient | null =
@@ -242,9 +259,9 @@ export const useCloseProposal = (senderAddress: string | undefined) => {
         ],
         gas: "2000000",
       };
-      const initMsg ={
-        proposal_id:proposal_id*1,
-      }
+      const initMsg = {
+        proposal_id: proposal_id * 1,
+      };
       const msg = { close: initMsg };
       console.log(JSON.stringify(msg, null, 2));
       if (senderAddress) {
@@ -252,7 +269,7 @@ export const useCloseProposal = (senderAddress: string | undefined) => {
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee, 
+          real_fee
         );
         // console.table(result);
         return result;
@@ -260,4 +277,3 @@ export const useCloseProposal = (senderAddress: string | undefined) => {
     },
   });
 };
-
