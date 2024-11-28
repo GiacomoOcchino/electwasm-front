@@ -8,7 +8,6 @@ import {
   useProposalQuery,
   useProposalResultQuery,
 } from "@/hooks/contract-query";
-import { z } from "zod";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import {
   useAskToJoinProposal,
@@ -27,13 +26,9 @@ import {
 import VotingPieChart from "@/components/pie-chart";
 import { Badge } from "@/components/ui/badge";
 import { useNotification } from "@/components/context/notification-context";
+import { VoteFormValues, voteSchema } from "@/schema/vote-schema";
 
 // Schema per validare il form
-const voteSchema = z.object({
-  option: z.string().min(1, "Please select an option."),
-});
-
-type VoteFormValues = z.infer<typeof voteSchema>;
 
 const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const { showNotification } = useNotification();
