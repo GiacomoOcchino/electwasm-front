@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "./ui/textarea";
 import { CalendarIcon, Plus, Trash } from "lucide-react"; // Icone per aggiungere/rimuovere opzioni
 import { Button } from "./ui/button";
 import MaxWidthWrapper from "./max-width-wrapper";
@@ -19,25 +18,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { parse } from "path";
 import { useCreateProposal } from "@/hooks/contract-mutation";
 import { useWallet } from "@/hooks/wallet";
-import { useQueryClient } from "@tanstack/react-query";
-import { error } from "console";
+import { useNotification } from "./context/notification-context";
 export const ProposalForm = () => {
-  //   const {
-  //     register,
-  //     handleSubmit,
-  //     control,
-  //     formState: { errors },
-  //   } = useForm<ProposalFormValues>({
-  //     resolver: zodResolver(proposalSchema),
-  //     defaultValues: {
-  //       option: [""], // Una opzione iniziale
-  //       expires: "",
-  //     },
-  //   });
-  const queryClient = useQueryClient();
+  const { showNotification } = useNotification();
   const form = useForm<ProposalFormValues>({
     resolver: zodResolver(proposalSchema),
     defaultValues: {
@@ -54,7 +39,8 @@ export const ProposalForm = () => {
   });
   const { wallet, connectKeplr } = useWallet();
   const { mutate: createProposal, isPending: creating } = useCreateProposal(
-    wallet?.address
+    wallet?.address,
+    showNotification
   );
 
   const onSubmit = (data: ProposalFormValues) => {
@@ -72,20 +58,7 @@ export const ProposalForm = () => {
       ...data,
       expires: { at_time: string_date },
     };
-    createProposal(
-      { initMsg },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["proposal_by_proposer", wallet?.address],
-          });
-          console.log("ok");
-        },
-        onError: (error) => {
-          console.error(error);
-        },
-      }
-    );
+    createProposal({ initMsg });
     // Invia i dati al contratto (ad esempio tramite CosmJS)
   };
   return (
@@ -158,48 +131,6 @@ export const ProposalForm = () => {
               </p>
             )}
           </div>
-          {/* <FormField
-            control={form.control}
-            name="expires"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Date of birth</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  Your date of birth is used to calculate your age.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <FormField
             control={form.control}
             name="expires"
@@ -243,8 +174,10 @@ export const ProposalForm = () => {
             )}
           />
 
-          <Button type="submit" className="bg-blue-500 text-white">
-            Submit
+          <Button type="submit" className="bg-blue-500 text-white" 
+              disabled={creating}
+              >
+             {creating ? "Creando la Proposta..." : "Crea"}
           </Button>
         </form>
       </Form>
