@@ -33,7 +33,7 @@ export const NotificationProvider = ({
     setToasts((prev) => [...prev, { type, message, id }]);
     setTimeout(
       () => setToasts((prev) => prev.filter((toast) => toast.id !== id)),
-      2000
+      3000
     );
   };
 

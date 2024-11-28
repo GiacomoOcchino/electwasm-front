@@ -1,5 +1,6 @@
 import { useCloseProposal } from "@/hooks/contract-mutation";
 import { useWallet } from "@/hooks/wallet";
+import { useNotification } from "./context/notification-context";
 
 interface ProposalListProps {
   proposals: [number, string][] | undefined;
@@ -10,23 +11,30 @@ export default function MyProposalList({
   proposals,
   setSelectedProposal,
 }: ProposalListProps) {
-  if (!proposals || proposals.length === 0) {
-    return <p>Nessuna proposta disponibile.</p>;
-  }
-  const { wallet, connectKeplr } = useWallet();
+  const { showNotification } = useNotification();
+  const { wallet } = useWallet();
   const { mutate: closeProposal, isPending: closing } = useCloseProposal(
     wallet?.address
   );
+
   const handleCloseProposal = (id: number) => {
     closeProposal(id, {
       onSuccess: () => {
-        alert(`Proposta ${id} chiusa con successo.`);
+        showNotification("default", `Proposta ${id} chiusa con successo.`);
       },
-      onError: () => {
-        alert(`Errore nella chiusura della proposta ${id}.`);
+      onError: (err) => {
+        showNotification(
+          "destructive",
+          `Errore nella chiusura della proposta ${err.message}.`
+        );
       },
     });
   };
+
+  if (!proposals || proposals.length === 0) {
+    return <p>Nessuna proposta disponibile.</p>;
+  }
+
   return (
     <div className="space-y-4">
       {proposals.map(([id, title]) => (
