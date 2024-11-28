@@ -269,7 +269,16 @@ export const useVoteProposal = (
       showNotification("default", "Votazione eseguita con successo!");
     },
     onError: (err) => {
-      showNotification("destructive", err.message);
+      let startIndex = err.message.indexOf("message index: 0:");
+      if (startIndex != -1) {
+        startIndex = startIndex + 18;
+        // Trova l'indice finale (prima del primo ":" successivo)
+        const endIndex = err.message.indexOf(":", startIndex);
+        // Estrai la sottostringa
+        const extractedMessage = err.message.slice(startIndex, endIndex);
+        // const extractedMessage = err.message.substring(startIndex + 18); // 18 is the length of "message index: 0:"
+        showNotification("destructive", extractedMessage);
+      } else showNotification("destructive", err.message);
     },
   });
 };
