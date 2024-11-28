@@ -3,12 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   useProposalQuery,
   useProposalResultQuery,
@@ -31,6 +26,7 @@ import {
 } from "@/components/ui/form";
 import VotingPieChart from "@/components/pie-chart";
 import { Badge } from "@/components/ui/badge";
+import { useNotification } from "@/components/context/notification-context";
 
 // Schema per validare il form
 const voteSchema = z.object({
@@ -40,18 +36,22 @@ const voteSchema = z.object({
 type VoteFormValues = z.infer<typeof voteSchema>;
 
 const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
+  const { showNotification } = useNotification();
+
   const { id } = params;
   const { wallet } = useStore();
   // Query per i dettagli della proposta
   const { data: proposal, isLoading, error } = useProposalQuery(id);
   const { mutate: askToJoin, isPending: asking } = useAskToJoinProposal(
     wallet?.address,
-    id
+    id,
+    showNotification
   );
 
   const { mutate: voteProposal, isPending: voting } = useVoteProposal(
     wallet?.address,
-    id
+    id,
+    showNotification
   );
   const isClosed = proposal?.status === "closed";
   const {
@@ -72,25 +72,11 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
       console.error("Validation error", parsed.error);
       return;
     }
-    voteProposal(data.option, {
-      onSuccess: () => {
-        console.log("Vote submitted successfully.");
-      },
-      onError: (error) => {
-        console.error(error);
-      },
-    });
+    voteProposal(data.option);
   };
 
   const handleRequestAccess = () => {
-    askToJoin(undefined, {
-      onSuccess: () => {
-        console.log("Request for access submitted successfully.");
-      },
-      onError: (error) => {
-        console.error(error);
-      },
-    });
+    askToJoin(undefined);
   };
 
   if (isLoading) return <div>Loading proposal details...</div>;
@@ -110,9 +96,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
         </CardHeader>
         <CardContent className="space-y-4 flex flex-col">
           <p className="text-gray-700">{proposal?.description}</p>
-          <p className="font-semibold">
-            Proposer:
-          </p>
+          <p className="font-semibold">Proposer:</p>
           <code className="text-sm md:text-base text-ellipsis overflow-hidden">
             {proposal?.proposer}
           </code>

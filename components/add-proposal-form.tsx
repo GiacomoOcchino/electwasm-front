@@ -37,7 +37,7 @@ export const ProposalForm = () => {
     control: form.control,
     name: "option", // Nome del campo dinamico
   });
-  const { wallet, connectKeplr } = useWallet();
+  const { wallet } = useWallet();
   const { mutate: createProposal, isPending: creating } = useCreateProposal(
     wallet?.address,
     showNotification
@@ -174,10 +174,12 @@ export const ProposalForm = () => {
             )}
           />
 
-          <Button type="submit" className="bg-blue-500 text-white" 
-              disabled={creating}
-              >
-             {creating ? "Creando la Proposta..." : "Crea"}
+          <Button
+            type="submit"
+            className="bg-blue-500 text-white"
+            disabled={creating}
+          >
+            {creating ? "Creando la Proposta..." : "Crea"}
           </Button>
         </form>
       </Form>

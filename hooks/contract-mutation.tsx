@@ -71,7 +71,7 @@ export const useCreateProposal = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["proposal_by_proposer", senderAddress],
+        queryKey: ["proposals_by_proposer", senderAddress],
       });
       showNotification("default", "Proposta creata con successo!");
     },
@@ -83,7 +83,11 @@ export const useCreateProposal = (
 
 export const useAskToJoinProposal = (
   senderAddress: string | undefined,
-  proposal_id: number
+  proposal_id: number,
+  showNotification: (
+    type: "default" | "destructive" | "running",
+    message: string
+  ) => void
 ) => {
   return useMutation({
     mutationFn: async () => {
@@ -128,12 +132,24 @@ export const useAskToJoinProposal = (
         return result;
       }
     },
+    onSuccess: () => {
+      showNotification("default", "Richiesta inviata con successo!");
+    },
+    onError: (err) => {
+      showNotification("destructive", err.message);
+    },
   });
 };
 export const useActionToProposal = (
   senderAddress: string | undefined,
-  proposal_id: number
+  proposal_id: number,
+  showNotification: (
+    type: "default" | "destructive" | "running",
+    message: string
+  ) => void
 ) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({
       voters,
@@ -173,20 +189,34 @@ export const useActionToProposal = (
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee 
+          real_fee
         );
         console.table(result);
         return result;
       }
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["proposals_by_proposer", senderAddress],
+      });
+      showNotification("default", "Operazione eseguita con successo!");
+    },
+    onError: (err) => {
+      showNotification("destructive", err.message);
     },
   });
 };
 
 export const useVoteProposal = (
   senderAddress: string | undefined,
-  proposal_id: number
+  proposal_id: number,
+  showNotification: (
+    type: "default" | "destructive" | "running",
+    message: string
+  ) => void
 ) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (vote: string) => {
       console.log("qui", vote);
@@ -231,6 +261,15 @@ export const useVoteProposal = (
         // console.table(result);
         return result;
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["running", proposal_id],
+      });
+      showNotification("default", "Votazione eseguita con successo!");
+    },
+    onError: (err) => {
+      showNotification("destructive", err.message);
     },
   });
 };
