@@ -7,7 +7,7 @@ import {
   queryProposalRunningOptions,
   queryVotersOptions,
 } from "@/queries/options";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const useAllProposalIdsAndTitlesQuery = () => {
   const options = queryAllProposalIdsAndTitlesOptions();

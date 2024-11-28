@@ -21,14 +21,18 @@ export const contractOption = {
 };
 
 export const queryAllProposalIdsAndTitlesOptions = () => ({
-  queryKey: ["all_proposal_ids"],
+  queryKey: ["all_proposals"],
   queryFn: async () => {
-    /* base64 of {"all_proposal_ids":{}} */
+    /* base64 of {"all_proposals":{}} */
+    const jsonString = JSON.stringify({
+      all_proposals: {},
+    });
+    const base64String = window.btoa(jsonString);
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/eyJhbGxfcHJvcG9zYWxfaWRzIjp7fX0="
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" + base64String + ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -43,22 +47,22 @@ export const queryAllProposalIdsAndTitlesOptions = () => ({
 export const queryProposalByProposerOptions = (
   proposer: string | undefined
 ) => ({
-  queryKey: ["proposal_by_proposer", proposer],
+  queryKey: ["proposals_by_proposer", proposer],
   queryFn: async () => {
     if (!proposer) throw new Error("Proposer address is required");
     /* base64 of {"all_proposal_ids":{proposer:proposer}} */
     const jsonString = JSON.stringify({
-      proposal_by_proposer: { proposer: proposer },
+      proposals_by_proposer: { proposer: proposer },
     });
     const base64String = window.btoa(jsonString);
 
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -81,11 +85,11 @@ export const queryContractStatusOptions = (enabled: boolean) => ({
 
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -98,7 +102,7 @@ export const queryContractStatusOptions = (enabled: boolean) => ({
     setContractState(result.data);
     return result.data;
   },
-  enabled: !enabled,
+  enabled: enabled,
   staleTime: Infinity,
   cacheTime: Infinity,
 });
@@ -108,18 +112,18 @@ export const queryProposalOptions = (id: number) => ({
   queryFn: async () => {
     /* base64 of {"proposal":{proposal_id:proposer}} */
     const jsonString = JSON.stringify({
-      proposal: { proposal_id: id * 1 },
+      proposal: { proposal_id: Number(id) },
     });
     const base64String = window.btoa(jsonString);
     console.log(jsonString);
     console.log(base64String);
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -135,7 +139,7 @@ export const queryProposalOptions = (id: number) => ({
 export const queryProposalResultOptions = (id: number, closed: boolean) => ({
   queryKey: ["winner", id],
   queryFn: async () => {
-    /* base64 of {"proposal":{proposal_id:proposer}} */
+    /* base64 of {"winner":{proposal_id:proposer}} */
     const jsonString = JSON.stringify({
       winner: { proposal_id: Number(id) },
     });
@@ -143,11 +147,11 @@ export const queryProposalResultOptions = (id: number, closed: boolean) => ({
 
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -173,11 +177,11 @@ export const queryProposalRunningOptions = (id: number, status: boolean) => ({
 
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
@@ -200,11 +204,11 @@ export const queryVotersOptions = (id: number) => ({
 
     const response = await fetch(
       JUNO_TESTNET_REST +
-        "cosmwasm/wasm/v1/contract/" +
-        CONTRACT_ADDRESS +
-        "/smart/" +
-        base64String +
-        ""
+      "cosmwasm/wasm/v1/contract/" +
+      CONTRACT_ADDRESS +
+      "/smart/" +
+      base64String +
+      ""
     );
     if (!response.ok) {
       return response.text().then((text) => {
