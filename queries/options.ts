@@ -8,7 +8,7 @@ import {
   StatusResponse,
   VotersResponse,
   Votes,
-} from "@/types/response";
+} from "@/types";
 import { queryOptions } from "@tanstack/react-query";
 
 export const contractOption = {

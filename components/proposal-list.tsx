@@ -1,14 +1,5 @@
-interface Proposal {
-    id: number;
-    title: string;
-    status: string;
-    winner?: string | null;
-  }
-  
-  interface ProposalListProps {
-    proposals: Proposal[];
-    setSelectedProposal: (proposal: Proposal) => void;
-  }
+import { ProposalListProps } from "@/types";
+
   
   export default function ProposalList({ proposals, setSelectedProposal }: ProposalListProps) {
     return (

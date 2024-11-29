@@ -1,17 +1,14 @@
 import { useCloseProposal } from "@/hooks/contract-mutation";
 import { useWallet } from "@/hooks/wallet";
 import { useNotification } from "./context/notification-context";
-import { ProposalInfoByResponse } from "@/types/response";
+import { MyProposalListProps } from "@/types";
 
-interface ProposalListProps {
-  proposals: ProposalInfoByResponse[] | undefined;
-  setSelectedProposal: (proposal: ProposalInfoByResponse) => void;
-}
+
 
 export default function MyProposalList({
   proposals,
   setSelectedProposal,
-}: ProposalListProps) {
+}: MyProposalListProps) {
   const { showNotification } = useNotification();
   const { wallet } = useWallet();
   const { mutate: closeProposal, isPending: closing } = useCloseProposal(

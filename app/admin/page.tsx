@@ -6,7 +6,7 @@ import { useWallet } from "@/hooks/wallet";
 import { useProposalByProposerQuery } from "@/hooks/contract-query";
 import MyProposalList from "@/components/my-proposal-list";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import { ProposalInfoByResponse } from "@/types/response";
+import { ProposalInfoByResponse } from "@/types";
 
 export default function AdminPage() {
   const { wallet } = useWallet();

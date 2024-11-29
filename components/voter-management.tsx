@@ -8,10 +8,9 @@ import { useWallet } from "@/hooks/wallet";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "./context/notification-context";
+import { VoterManagementProps } from "@/types";
 
-interface VoterManagementProps {
-  proposalId: number;
-}
+
 
 export default function VoterManagement({ proposalId }: VoterManagementProps) {
   const { showNotification } = useNotification();

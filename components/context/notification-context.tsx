@@ -7,7 +7,7 @@ import { Toast, ToastProvider, ToastViewport } from "../ui/toast";
 import {
   NotificationContextType,
   ToastContextType,
-} from "@/types/notification";
+} from "@/types";
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
   undefined
