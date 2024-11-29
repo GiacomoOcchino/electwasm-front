@@ -7,6 +7,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   useProposalQuery,
   useProposalResultQuery,
+  useVotersQuery,
 } from "@/hooks/contract-query";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import {
@@ -27,6 +28,7 @@ import VotingPieChart from "@/components/pie-chart";
 import { Badge } from "@/components/ui/badge";
 import { useNotification } from "@/components/context/notification-context";
 import { VoteFormValues, voteSchema } from "@/schema/vote-schema";
+import { useEffect, useState } from "react";
 
 // Schema per validare il form
 
@@ -35,6 +37,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
 
   const { id } = params;
   const { wallet } = useStore();
+  const [skipQuery, setSkipQuery] = useState(false);
   // Query per i dettagli della proposta
   const { data: proposal, isLoading, error } = useProposalQuery(id);
   const { mutate: askToJoin, isPending: asking } = useAskToJoinProposal(
@@ -54,6 +57,14 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
     isResultLoading,
     resultError,
   } = useProposalResultQuery(id, isClosed);
+  const {
+    data: voters,
+    isLoading: queryVotersLoading,
+    error: queryVotersError,
+  } = useVotersQuery(Number(id), skipQuery);
+  if (queryVotersError) {
+    console.error(queryVotersError);
+  }
   const form = useForm<VoteFormValues>({
     resolver: zodResolver(voteSchema),
     defaultValues: {
@@ -73,7 +84,14 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const handleRequestAccess = () => {
     askToJoin(undefined);
   };
-
+  // Controllo se l'utente è tra gli allowed_voters
+  const isAllowedVoter = voters?.allowed_voters.includes(wallet?.address || "");
+  // Controllo se l'utente è tra gli allowed_voters
+  const AlreadyVoted = voters?.has_voted_voters.includes(wallet?.address || "");
+  useEffect(() => {
+    // Disabilita ulteriori query se l'utente ha già votato
+    if (AlreadyVoted) setSkipQuery(true);
+  }, [AlreadyVoted]);
   if (isLoading) return <div>Loading proposal details...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -101,6 +119,22 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
               Number(proposal?.expires.at_time) / 1_000_000
             ).toLocaleString()}
           </p>
+          {/* Mostra lo stato del votante */}
+          {queryVotersLoading ? (
+            <p>Loading voter status...</p>
+          ) : (
+            <p>
+              {isAllowedVoter ? (
+                <span className="text-green-500">You are allowed to vote.</span>
+              ) : AlreadyVoted ? (
+                <span className="text-red-500">You have already voted.</span>
+              ) : (
+                <span className="text-red-500">
+                  You are not allowed to vote.
+                </span>
+              )}
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -177,7 +211,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
           </Card>
         )}
       </div>
-      {!isClosed && (
+      {!isClosed && !isAllowedVoter && !AlreadyVoted && (
         <div className="mt-6">
           <Button
             onClick={handleRequestAccess}

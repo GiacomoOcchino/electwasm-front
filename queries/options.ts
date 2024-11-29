@@ -191,7 +191,7 @@ export const queryProposalRunningOptions = (id: number, status: boolean) => ({
   },
   enabled: !!CONTRACT_ADDRESS && !status,
 });
-export const queryVotersOptions = (id: number) => ({
+export const queryVotersOptions = (id: number,enabled: boolean) => ({
   queryKey: ["voters", id],
   queryFn: async () => {
     /* base64 of {"voters":{proposal_id:proposer}} */
@@ -216,5 +216,5 @@ export const queryVotersOptions = (id: number) => ({
     const result: VotersResponse = await response.json();
     return result.data;
   },
-  enabled: !!id,
+  enabled: !!id && !enabled,
 });

@@ -62,30 +62,7 @@ const ProposalsPage = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {proposals?.proposals.map((p) => (
-          // <Card
-          //   key={p[0]}
-          //   className="shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 rounded-lg flex flex-col justify-between"
-          // >
-          //   <CardHeader className="pb-2">
-          //     <h3 className="text-xl font-semibold text-gray-800">{p[1]}</h3>
-          //   </CardHeader>
-          //   <CardContent>
-          //     <p className="text-sm text-gray-600">
-          //       Proposal ID: <span className="font-medium">{p[0]}</span>
-          //     </p>
-          //   </CardContent>
-          //   <CardFooter className="pt-4">
-          //     <Link
-          //       href={`/proposals/${p[0]}`}
-          //       className={`${buttonVariants({
-          //         variant: "default",
-          //         size: "lg",
-          //       })} w-full`}
-          //     >
-          //       View Details
-          //     </Link>
-          //   </CardFooter>
-          // </Card>
+
           <Card
             key={p[0]}
             className="shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 rounded-lg flex flex-col justify-between"

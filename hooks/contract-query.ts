@@ -47,7 +47,7 @@ export const useProposalRunningQuery = (
   return useQuery(options);
 };
 //DONE
-export const useVotersQuery = (id: number) => {
-  const options = queryVotersOptions(id);
+export const useVotersQuery = (id: number,enabled: boolean) => {
+  const options = queryVotersOptions(id,enabled);
   return useQuery(options);
 };

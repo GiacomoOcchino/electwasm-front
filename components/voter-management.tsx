@@ -24,7 +24,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
     data: voters,
     isLoading: queryVotersLoading,
     error: queryVotersError,
-  } = useVotersQuery(proposalId);
+  } = useVotersQuery(proposalId,false);
 
   const { mutate: actionToProposal, isPending } = useActionToProposal(
     wallet?.address,
