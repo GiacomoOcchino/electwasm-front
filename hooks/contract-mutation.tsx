@@ -6,10 +6,7 @@ import useStore from "@/store/store";
 
 export const useCreateProposal = (
   senderAddress: string | undefined,
-  showNotification: (
-    type: "default" | "destructive",
-    message: string
-  ) => void
+  showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -84,10 +81,7 @@ export const useCreateProposal = (
 export const useAskToJoinProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
-  showNotification: (
-    type: "default" | "destructive",
-    message: string
-  ) => void
+  showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
   return useMutation({
     mutationFn: async () => {
@@ -143,10 +137,7 @@ export const useAskToJoinProposal = (
 export const useActionToProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
-  showNotification: (
-    type: "default" | "destructive",
-    message: string
-  ) => void
+  showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
   const queryClient = useQueryClient();
 
@@ -210,10 +201,7 @@ export const useActionToProposal = (
 export const useVoteProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
-  showNotification: (
-    type: "default" | "destructive",
-    message: string
-  ) => void
+  showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
   const queryClient = useQueryClient();
 

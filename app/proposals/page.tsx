@@ -62,7 +62,6 @@ const ProposalsPage = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {proposals?.proposals.map((p) => (
-
           <Card
             key={p[0]}
             className="shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 rounded-lg flex flex-col justify-between"

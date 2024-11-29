@@ -20,7 +20,7 @@ export const useProposalByProposerQuery = (proposer: string | undefined) => {
   return useQuery(options);
 };
 // DONE
-export const useContractStatusQuery = (enabled:boolean) => {
+export const useContractStatusQuery = (enabled: boolean) => {
   const options = queryContractStatusOptions(enabled);
   return useQuery(options);
 };
@@ -35,19 +35,19 @@ export const useProposalResultQuery = (
   id: number,
   enabled: boolean
 ) => {
-  const options = queryProposalResultOptions(id,enabled);
+  const options = queryProposalResultOptions(id, enabled);
   return useQuery(options);
 };
 
 export const useProposalRunningQuery = (
   id: number,
-  status:boolean
+  status: boolean
 ) => {
-  const options = queryProposalRunningOptions(id,status);
+  const options = queryProposalRunningOptions(id, status);
   return useQuery(options);
 };
 //DONE
-export const useVotersQuery = (id: number,enabled: boolean) => {
-  const options = queryVotersOptions(id,enabled);
+export const useVotersQuery = (id: number, enabled: boolean) => {
+  const options = queryVotersOptions(id, enabled);
   return useQuery(options);
 };
