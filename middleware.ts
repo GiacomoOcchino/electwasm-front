@@ -4,17 +4,18 @@ import { NextResponse, type NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const isAuthenticated = request.cookies.get('isAuthenticated')?.value === 'true';
 
-  // Se l'utente non è autenticato e prova ad accedere alle pagine protette
+  // If the user is not authenticated and tries to access protected pages
   if (!isAuthenticated && (request.nextUrl.pathname === '/admin')) {
-    // Reindirizza alla home se non autenticato
-    return NextResponse.redirect(new URL('/', request.url));
+    // Redirect to home if not authenticated
+    return NextResponse.redirect(new URL('/unauthorized', request.url));
+    // return NextResponse.redirect(new URL('/', request.url));
   }
 
-  // Consenti l'accesso se autenticato o su pagine non protette
+  // Allow access when authenticated or on non-secure pages
   return NextResponse.next();
 }
 
-// Specifica su quali percorsi attivare il middleware
+// Specify on which paths to enable the middleware
 export const config = {
   matcher: ['/((?!api|_next).*)'],
 };

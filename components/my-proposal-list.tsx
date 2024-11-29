@@ -3,8 +3,6 @@ import { useWallet } from "@/hooks/wallet";
 import { useNotification } from "./context/notification-context";
 import { MyProposalListProps } from "@/types";
 
-
-
 export default function MyProposalList({
   proposals,
   setSelectedProposal,
@@ -60,7 +58,7 @@ export default function MyProposalList({
               <span className="font-semibold">{proposal.winner}</span>
             </p>
           )}
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex justify-between items-center mt-4 gap-3">
             <button
               onClick={() => setSelectedProposal(proposal)}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
