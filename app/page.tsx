@@ -66,7 +66,7 @@ export default function Home() {
             Key Features
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <Card>
+            <Card className="flex flex-col justify-between">
               <CardHeader>
                 <CardTitle>Propose</CardTitle>
                 <CardDescription>
@@ -86,7 +86,7 @@ export default function Home() {
               </CardFooter>
             </Card>
 
-            <Card>
+            <Card className="flex flex-col justify-between">
               <CardHeader>
                 <CardTitle>Vote</CardTitle>
                 <CardDescription>
@@ -106,7 +106,7 @@ export default function Home() {
               </CardFooter>
             </Card>
 
-            <Card>
+            <Card className="flex flex-col justify-between">
               <CardHeader>
                 <CardTitle>Proposal Statistics</CardTitle>
                 <CardDescription>

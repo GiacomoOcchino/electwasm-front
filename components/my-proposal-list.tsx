@@ -24,10 +24,13 @@ export default function MyProposalList({
         showNotification("default", `Proposta ${id} chiusa con successo.`);
       },
       onError: (err) => {
-        showNotification(
-          "destructive",
-          `Errore nella chiusura della proposta ${err.message}.`
-        );
+        let startIndex = err.message.indexOf("message index: 0:");
+        if (startIndex != -1) {
+          startIndex = startIndex + 18;
+          const endIndex = err.message.indexOf(":", startIndex);
+          const extractedMessage = err.message.slice(startIndex, endIndex);
+          showNotification("destructive", extractedMessage);
+        } else showNotification("destructive", err.message);
       },
     });
   };
@@ -48,9 +51,7 @@ export default function MyProposalList({
             Stato:{" "}
             <span
               className={`font-semibold ${
-                proposal.status === "open"
-                  ? "text-green-600"
-                  : "text-red-600"
+                proposal.status === "open" ? "text-green-600" : "text-red-600"
               }`}
             >
               {proposal.status === "open" ? "Aperto" : "Chiuso"}
@@ -58,7 +59,8 @@ export default function MyProposalList({
           </p>
           {proposal.winner && (
             <p className="text-sm text-gray-700">
-              Vincitore: <span className="font-semibold">{proposal.winner}</span>
+              Vincitore:{" "}
+              <span className="font-semibold">{proposal.winner}</span>
             </p>
           )}
           <div className="flex justify-between items-center mt-4">

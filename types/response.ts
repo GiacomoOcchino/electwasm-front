@@ -1,6 +1,6 @@
 export interface ProposalIdsWithTitlesResponse {
   data: {
-    proposals: [number, string][];
+    proposals: [number, string,"open" | "closed"][];
   };
 }
 
@@ -12,7 +12,7 @@ export interface ProposalsByProposerResponse {
 export interface ProposalInfoByResponse {
   id: number,
   title: string,
-  status: "open" | "close",
+  status: "open" | "closed",
   winner: string,
 }
 
