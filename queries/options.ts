@@ -9,6 +9,7 @@ import {
   VotersResponse,
   Votes,
 } from "@/types/response";
+import { queryOptions } from "@tanstack/react-query";
 
 export const contractOption = {
   defaultOptions: {
@@ -20,7 +21,7 @@ export const contractOption = {
   },
 };
 
-export const queryAllProposalIdsAndTitlesOptions = () => ({
+export const queryAllProposalIdsAndTitlesOptions = () => queryOptions({
   queryKey: ["all_proposals"],
   queryFn: async () => {
     /* base64 of {"all_proposals":{}} */
@@ -46,7 +47,7 @@ export const queryAllProposalIdsAndTitlesOptions = () => ({
 
 export const queryProposalByProposerOptions = (
   proposer: string | undefined
-) => ({
+) => queryOptions({
   queryKey: ["proposals_by_proposer", proposer],
   queryFn: async () => {
     if (!proposer) throw new Error("Proposer address is required");
@@ -74,7 +75,7 @@ export const queryProposalByProposerOptions = (
   },
   enabled: !!proposer,
 });
-export const queryContractStatusOptions = (enabled: boolean) => ({
+export const queryContractStatusOptions = (enabled: boolean) => queryOptions({
   queryKey: ["contract_status"],
   queryFn: async () => {
     /* base64 of {"status":{}} */
@@ -104,10 +105,9 @@ export const queryContractStatusOptions = (enabled: boolean) => ({
   },
   enabled: enabled,
   staleTime: Infinity,
-  cacheTime: Infinity,
 });
 
-export const queryProposalOptions = (id: number) => ({
+export const queryProposalOptions = (id: number) => queryOptions({
   queryKey: ["proposal", id],
   queryFn: async () => {
     /* base64 of {"proposal":{proposal_id:proposer}} */
@@ -136,7 +136,7 @@ export const queryProposalOptions = (id: number) => ({
   enabled: !!id,
 });
 
-export const queryProposalResultOptions = (id: number, closed: boolean) => ({
+export const queryProposalResultOptions = (id: number, closed: boolean) => queryOptions({
   queryKey: ["winner", id],
   queryFn: async () => {
     /* base64 of {"winner":{proposal_id:proposer}} */
@@ -163,7 +163,7 @@ export const queryProposalResultOptions = (id: number, closed: boolean) => ({
   },
   enabled: !!CONTRACT_ADDRESS && !!closed,
 });
-export const queryProposalRunningOptions = (id: number, status: boolean) => ({
+export const queryProposalRunningOptions = (id: number, status: boolean) => queryOptions({
   queryKey: ["running", id],
   queryFn: async () => {
     /* base64 of {"running":{proposal_id:id}} */
@@ -191,7 +191,7 @@ export const queryProposalRunningOptions = (id: number, status: boolean) => ({
   },
   enabled: !!CONTRACT_ADDRESS && !status,
 });
-export const queryVotersOptions = (id: number,enabled: boolean) => ({
+export const queryVotersOptions = (id: number, enabled: boolean) => queryOptions({
   queryKey: ["voters", id],
   queryFn: async () => {
     /* base64 of {"voters":{proposal_id:proposer}} */
