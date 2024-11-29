@@ -9,6 +9,7 @@ import MenuSvg from "@/app/assets/svg/menu";
 import thumb from "@/app/assets/thumb.png";
 import { useContractStatusQuery } from "@/hooks/contract-query";
 import useStore from "@/store/store";
+import { User } from "lucide-react";
 
 const Navbar = () => {
   const { wallet, connectKeplr, isLoading, isAuthenticated } = useWallet();
@@ -51,7 +52,7 @@ const Navbar = () => {
       <MaxWidthWrapper>
         <div className="flex h-14 justify-between items-center">
           <Link href="/" prefetch className="flex z-40 font-semibold">
-            ElectWasm Ballots Platform
+           ElectWasm Voting Platform
           </Link>
           <div className="h-full flex items-center space-x-4">
             {isLoading ? (
@@ -70,13 +71,15 @@ const Navbar = () => {
                   <Link className="text-3xl md:text-base" href="/admin">Admin</Link>
                   <Link className="text-3xl md:text-base" href="/proposals">Proposals</Link>
                 </nav>
-                <Image
+                <User width={20}
+                  height={20}/>
+                {/* <Image
                   src={thumb} // Replace with actual image path
                   width={50}
                   height={50}
                   alt="avatar"
                   className="rounded-lg w-6 md:h-8 md:w-auto"
-                />
+                /> */}
                 <code className="text-sm md:text-base text-ellipsis overflow-hidden max-w-6 md:max-w-[unset]">
                   {wallet?.address}
                 </code>
