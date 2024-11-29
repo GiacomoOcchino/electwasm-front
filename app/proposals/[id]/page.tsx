@@ -54,8 +54,6 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const isClosed = proposal?.status === "closed";
   const {
     data: results,
-    isResultLoading,
-    resultError,
   } = useProposalResultQuery(id, isClosed);
   const {
     data: voters,
