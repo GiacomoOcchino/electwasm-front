@@ -1,10 +1,11 @@
 import { useCloseProposal } from "@/hooks/contract-mutation";
 import { useWallet } from "@/hooks/wallet";
 import { useNotification } from "./context/notification-context";
+import { ProposalInfoByResponse } from "@/types/response";
 
 interface ProposalListProps {
-  proposals: [number, string][] | undefined;
-  setSelectedProposal: (proposal: [number, string]) => void;
+  proposals: ProposalInfoByResponse[] | undefined;
+  setSelectedProposal: (proposal: ProposalInfoByResponse) => void;
 }
 
 export default function MyProposalList({
@@ -37,27 +38,49 @@ export default function MyProposalList({
 
   return (
     <div className="space-y-4">
-      {proposals.map(([id, title]) => (
-        <div key={id} className="border p-4 rounded shadow-md space-y-2">
-          <h4 className="text-lg font-bold">{title}</h4>
-          <div className="flex justify-between items-center">
+      {proposals.map((proposal) => (
+        <div
+          key={proposal.id}
+          className="border p-4 rounded shadow-md space-y-2 bg-gray-100"
+        >
+          <h4 className="text-lg font-bold">{proposal.title}</h4>
+          <p className="text-sm text-gray-700">
+            Stato:{" "}
+            <span
+              className={`font-semibold ${
+                proposal.status === "open"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {proposal.status === "open" ? "Aperto" : "Chiuso"}
+            </span>
+          </p>
+          {proposal.winner && (
+            <p className="text-sm text-gray-700">
+              Vincitore: <span className="font-semibold">{proposal.winner}</span>
+            </p>
+          )}
+          <div className="flex justify-between items-center mt-4">
             <button
-              onClick={() => setSelectedProposal([id, title])}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              onClick={() => setSelectedProposal(proposal)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Gestisci Votanti
             </button>
-            <button
-              onClick={() => handleCloseProposal(id)}
-              disabled={closing}
-              className={`${
-                closing
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-red-500 hover:bg-red-600"
-              } text-white px-4 py-2 rounded`}
-            >
-              {closing ? "Chiudendo..." : "Chiudi Proposta"}
-            </button>
+            {proposal.status === "open" && (
+              <button
+                onClick={() => handleCloseProposal(proposal.id)}
+                disabled={closing}
+                className={`${
+                  closing
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-red-500 hover:bg-red-600"
+                } text-white px-4 py-2 rounded`}
+              >
+                {closing ? "Chiudendo..." : "Chiudi Proposta"}
+              </button>
+            )}
           </div>
         </div>
       ))}

@@ -6,12 +6,11 @@ import { useWallet } from "@/hooks/wallet";
 import { useProposalByProposerQuery } from "@/hooks/contract-query";
 import MyProposalList from "@/components/my-proposal-list";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
+import { ProposalInfoByResponse } from "@/types/response";
 
 export default function AdminPage() {
   const { wallet } = useWallet();
-  const [selectedProposal, setSelectedProposal] = useState<
-    [number, string] | null
-  >(null);
+  const [selectedProposal, setSelectedProposal] = useState<ProposalInfoByResponse | null>(null);
 
   // Query per ottenere le proposte dell'utente
   const {
@@ -38,14 +37,30 @@ export default function AdminPage() {
       {selectedProposal && (
         <div className="my-4">
           <h3 className="text-lg font-semibold">Proposta Selezionata:</h3>
-          <div className="flex flex-col  gap-4 md:flex-row">
-            <p>ID: {selectedProposal[0]}</p>
-            <p>Titolo: {selectedProposal[1]}</p>
+          <div className="flex flex-col gap-4 md:flex-row">
+            <p>ID: {selectedProposal.id}</p>
+            <p>Titolo: {selectedProposal.title}</p>
+            <p>
+              Stato:{" "}
+              <span
+                className={`font-semibold ${
+                  selectedProposal.status === "open"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {selectedProposal.status === "open" ? "Aperto" : "Chiuso"}
+              </span>
+            </p>
+            {selectedProposal.winner && (
+              <p>Vincitore: {selectedProposal.winner}</p>
+            )}
           </div>
-          {/* Esegui altre azioni */}
         </div>
       )}
-      {selectedProposal && <VoterManagement proposalId={selectedProposal[0]} />}
+      {selectedProposal && (
+        <VoterManagement proposalId={selectedProposal.id} />
+      )}
     </MaxWidthWrapper>
   );
 }
