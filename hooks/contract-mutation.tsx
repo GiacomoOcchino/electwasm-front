@@ -7,7 +7,7 @@ import useStore from "@/store/store";
 export const useCreateProposal = (
   senderAddress: string | undefined,
   showNotification: (
-    type: "default" | "destructive" | "running",
+    type: "default" | "destructive",
     message: string
   ) => void
 ) => {
@@ -85,7 +85,7 @@ export const useAskToJoinProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
   showNotification: (
-    type: "default" | "destructive" | "running",
+    type: "default" | "destructive",
     message: string
   ) => void
 ) => {
@@ -144,7 +144,7 @@ export const useActionToProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
   showNotification: (
-    type: "default" | "destructive" | "running",
+    type: "default" | "destructive",
     message: string
   ) => void
 ) => {
@@ -211,7 +211,7 @@ export const useVoteProposal = (
   senderAddress: string | undefined,
   proposal_id: number,
   showNotification: (
-    type: "default" | "destructive" | "running",
+    type: "default" | "destructive",
     message: string
   ) => void
 ) => {
