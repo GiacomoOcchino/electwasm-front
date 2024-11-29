@@ -6,19 +6,15 @@ export interface ProposalIdsWithTitlesResponse {
 
 export interface ProposalsByProposerResponse {
   data: {
-    proposals: [number, string][]; // Array di tuple [id, title]
-  };
+    proposals: ProposalInfoByResponse[];   };
 }
 
-// export interface ProposalResponse {
-//   id: number;
-//   title: string;
-//   description: string;
-//   status: "open" | "closed";
-//   expires: number;
-//   proposer: string;
-//   options: string[];
-// }
+export interface ProposalInfoByResponse {
+  id: number,
+  title: string,
+  status: "open" | "close",
+  winner: string,
+}
 
 export interface ProposalDetailsResponse {
   data: {
