@@ -137,13 +137,7 @@ export default function Home() {
 
         <footer className="py-6 text-center text-sm text-gray-500">
           <p>&copy; 2024 Your DApp. Powered by Giacomo Occhino</p>
-          <p>
-            Visit our{" "}
-            <Link href="/docs" className="text-blue-400 underline">
-              Documentation
-            </Link>{" "}
-            for more details.
-          </p>
+         
         </footer>
       </main>
     </>

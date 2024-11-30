@@ -9,7 +9,7 @@ const VotingPieChart = ({ id,status }: { id: number,status:boolean }) => {
   const [counts, setCounts] = useState<number[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
-  const { data: proposal, isLoading, error } = useProposalRunningQuery(id,status);
+  const { data: proposal } = useProposalRunningQuery(id,status);
   console.log("STATUS",status);
   // Genera colori casuali
   const generateColors = (num: number) => {
@@ -49,7 +49,7 @@ const VotingPieChart = ({ id,status }: { id: number,status:boolean }) => {
         <Doughnut data={data} />
       ) : (
         <div className="text-center text-gray-500">
-          Nessun voto disponibile. Attendi che i voti vengano registrati.
+          No votes available. Wait for votes to be recorded.
         </div>
       )}
     </div>

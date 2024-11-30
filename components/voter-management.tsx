@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useActionToProposal } from "@/hooks/contract-mutation";
 import { useWallet } from "@/hooks/wallet";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "./context/notification-context";
 import { VoterManagementProps } from "@/types";
 
@@ -18,7 +17,6 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
   const { wallet } = useWallet();
   const [selectedToAdd, setSelectedToAdd] = useState<string[]>([]);
   const [selectedToRemove, setSelectedToRemove] = useState<string[]>([]);
-  const queryClient = useQueryClient();
   const {
     data: voters,
     isLoading: queryVotersLoading,
@@ -30,16 +28,15 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
     proposalId,
     showNotification
   );
-  // Gestisce la selezione/deselezione dei votanti da aggiungere
   const handleAddCheckboxChange = (voter: string) => {
     setSelectedToAdd(
       (prev) =>
         prev.includes(voter)
-          ? prev.filter((v) => v !== voter) // Rimuove se già selezionato
-          : [...prev, voter] // Aggiunge se non è selezionato
+          ? prev.filter((v) => v !== voter) // Remove if already selected
+          : [...prev, voter] // Adds if not selected
     );
   };
-  // Gestisce la selezione/deselezione dei votanti da rimuovere
+
   const handleRemoveCheckboxChange = (voter: string) => {
     setSelectedToRemove(
       (prev) =>
@@ -49,49 +46,35 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
     );
   };
 
-  // Placeholder per la mutation di accettazione
   const handleActionToVoters = () => {
-    console.log("Votanti accettati:", selectedToAdd);
-    // Chiama la tua mutation qui
     const voters = {
       add: selectedToAdd,
       rmv: selectedToRemove,
     };
     actionToProposal(
-      { voters },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["voters", proposalId],
-          });
-          console.log("ok");
-        },
-        onError: (error) => {
-          console.error(error);
-        },
-      }
+      { voters }
     );
   };
 
-  if (queryVotersLoading) return <div>Caricamento votanti...</div>;
+  if (queryVotersLoading) return <div>Loading voters...</div>;
 
   if (queryVotersError)
     return (
       <div className="text-red-500">
-        Errore durante il caricamento dei votanti.
+        Error loading voters.
       </div>
     );
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Gestione Votanti</h2>
+      <h2 className="text-2xl font-bold">Voter Management</h2>
 
       {/* Pending Voters */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Badge variant="outline">Pending</Badge>
-            <span>Votanti in Attesa</span>
+            <span>Voters Waiting</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -114,7 +97,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">Nessun votante in attesa.</p>
+            <p className="text-gray-500">No voters waiting.</p>
           )}
         </CardContent>
       </Card>
@@ -124,7 +107,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Badge variant="outline">Accepted</Badge>
-            <span>Votanti Autorizzati</span>
+            <span>Authorized Voters</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -147,7 +130,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">Nessun votante autorizzato.</p>
+            <p className="text-gray-500">No voters allowed.</p>
           )}
         </CardContent>
       </Card>
@@ -157,7 +140,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Badge variant="outline">Voted</Badge>
-            <span>Votanti che Hanno Votato</span>
+            <span>Voters who voted</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -175,7 +158,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">Nessun votante che ha votato.</p>
+            <p className="text-gray-500">No voters who voted.</p>
           )}
         </CardContent>
       </Card>
@@ -187,7 +170,7 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
           onClick={handleActionToVoters}
           disabled={selectedToAdd.length === 0 || isPending}
         >
-          {isPending ? "Loading" : "Accetta/Rimuovi Votanti Selezionati"}
+          {isPending ? "Loading" : "Accept/Remove Selected Voters"}
         </Button>
       </div>
     </div>

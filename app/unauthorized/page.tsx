@@ -1,38 +1,18 @@
+import MaxWidthWrapper from "@/components/max-width-wrapper";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function UnauthorizedPage() {
   return (
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        textAlign: "center",
-        backgroundColor: "#f8f9fa",
-        color: "#212529",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Accesso Negato</h1>
-      <p style={{ marginBottom: "2rem" }}>
-        Non sei autenticato per accedere a questa pagina. Per favore effettua l'accesso o torna alla
-        <strong> home</strong>.
+    <MaxWidthWrapper>
+      <h1 className="text-2xl">Access Denied</h1>
+      <p className="my-6 ">
+        You are not authenticated to access this page. Please do it
+        access or return to <strong>home</strong>.
       </p>
-      <Link
-        href="/"
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          textDecoration: "none",
-          borderRadius: "5px",
-          fontWeight: "bold",
-        }}
-      >
-        Torna alla Home
-      </Link>
-    </main>
+      <Button asChild>
+        <Link href="/proposals">Home</Link>
+      </Button>
+    </MaxWidthWrapper>
   );
 }

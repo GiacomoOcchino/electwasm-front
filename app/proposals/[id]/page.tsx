@@ -30,7 +30,6 @@ import { useNotification } from "@/components/context/notification-context";
 import { VoteFormValues, voteSchema } from "@/schema/vote-schema";
 import { useEffect, useState } from "react";
 
-// Schema per validare il form
 
 const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const { showNotification } = useNotification();
@@ -38,7 +37,6 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const { id } = params;
   const { wallet } = useStore();
   const [skipQuery, setSkipQuery] = useState(false);
-  // Query per i dettagli della proposta
   const { data: proposal, isLoading, error } = useProposalQuery(id);
   const { mutate: askToJoin, isPending: asking } = useAskToJoinProposal(
     wallet?.address,
@@ -82,12 +80,12 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
   const handleRequestAccess = () => {
     askToJoin(undefined);
   };
-  // Controllo se l'utente è tra gli allowed_voters
+  // Checking whether the user is among the allowed_voters
   const isAllowedVoter = voters?.allowed_voters.includes(wallet?.address || "");
-  // Controllo se l'utente è tra gli allowed_voters
+  // Checking whether the user is among the allowed_voters
   const AlreadyVoted = voters?.has_voted_voters.includes(wallet?.address || "");
   useEffect(() => {
-    // Disabilita ulteriori query se l'utente ha già votato
+    // Disable further queries if the user has already voted
     if (AlreadyVoted) setSkipQuery(true);
   }, [AlreadyVoted]);
   if (isLoading) return <div>Loading proposal details...</div>;
@@ -117,7 +115,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
               Number(proposal?.expires.at_time) / 1_000_000
             ).toLocaleString()}
           </p>
-          {/* Mostra lo stato del votante */}
+          {/* Show voter status */}
           {queryVotersLoading ? (
             <p>Loading voter status...</p>
           ) : (
@@ -137,7 +135,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* Form per votare */}
+        {/* Form to vote */}
         <Card className="bg-gray-100 shadow-md">
           <CardHeader>
             <h2 className="text-lg font-semibold">Cast Your Vote</h2>
@@ -188,7 +186,7 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
           </CardContent>
         </Card>
 
-        {/* Grafico per risultati */}
+        {/* Chart by results */}
         {!isClosed ? (
           <Card className="shadow-md">
             <CardHeader>
@@ -204,7 +202,11 @@ const ProposalDetailsPage = ({ params }: { params: { id: number } }) => {
               <h2 className="text-lg font-semibold">Proposal Result</h2>
             </CardHeader>
             <CardContent>
+              {results?.winner ?
               <h3>{results?.winner}</h3>
+              :
+              <h3>Waiting for the count...</h3>
+              }
             </CardContent>
           </Card>
         )}

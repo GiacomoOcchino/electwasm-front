@@ -25,7 +25,7 @@ export default function AdminPage() {
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <ProposalForm />
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">Le tue proposte</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">Your proposals</h2>
       {queryLoading ? (
         <div>Loading...</div>
       ) : (
@@ -36,12 +36,12 @@ export default function AdminPage() {
       )}
       {selectedProposal && (
         <div className="my-4">
-          <h3 className="text-lg font-semibold">Proposta Selezionata:</h3>
+          <h3 className="text-lg font-semibold">Selected Proposal:</h3>
           <div className="flex flex-col gap-4 md:flex-row">
             <p>ID: {selectedProposal.id}</p>
-            <p>Titolo: {selectedProposal.title}</p>
+            <p>Title: {selectedProposal.title}</p>
             <p>
-              Stato:{" "}
+              Status:{" "}
               <span
                 className={`font-semibold ${
                   selectedProposal.status === "open"
@@ -49,11 +49,11 @@ export default function AdminPage() {
                     : "text-red-600"
                 }`}
               >
-                {selectedProposal.status === "open" ? "Aperto" : "Chiuso"}
+                {selectedProposal.status === "open" ? "Open" : "Closed"}
               </span>
             </p>
             {selectedProposal.winner && (
-              <p>Vincitore: {selectedProposal.winner}</p>
+              <p>Winner: {selectedProposal.winner}</p>
             )}
           </div>
         </div>

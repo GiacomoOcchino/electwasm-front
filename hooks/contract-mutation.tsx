@@ -1,5 +1,5 @@
 import { CHAIN_ID, CONTRACT_ADDRESS, JUNO_TESTNET_RPC } from "@/constant";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import useStore from "@/store/store";
@@ -11,10 +11,7 @@ export const useCreateProposal = (
 ) => {
   return useMutation({
     mutationFn: async ({ initMsg }: { initMsg: object }) => {
-      //   console.table('qui',initMsg);
-      console.log("qui");
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
-
       const cosmwasmClient: SigningCosmWasmClient | null =
         await SigningCosmWasmClient.connectWithSigner(
           JUNO_TESTNET_RPC,
@@ -22,9 +19,9 @@ export const useCreateProposal = (
         );
 
       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
+      // Access store status
       const { commissions } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
+      // Find the fee required for this transaction (if applicable)
       const payment = commissions.find((commission) =>
         commission.includes("ujunox")
       );
@@ -33,7 +30,7 @@ export const useCreateProposal = (
           "Payment of 1000 ujunox required but not found in store"
         );
       }
-      const paymentAmount = payment.split(" ")[0]; // "1000"
+      const paymentAmount = payment.split(" ")[0];
       const real_fee = {
         amount: [
           {
@@ -52,25 +49,25 @@ export const useCreateProposal = (
           senderAddress,
           CONTRACT_ADDRESS,
           msg,
-          real_fee, // Puoi specificare un oggetto fee qui se necessario
+          real_fee, 
           undefined,
           [
             {
               denom: "ujunox",
-              amount: paymentAmount, // Include il pagamento richiesto dal contratto
+              amount: paymentAmount, // Includes the payment required by the contract
             },
           ]
         );
         console.table(result);
         return result;
       }
-      // Invia la transazione con le fee
+      // Submit transaction with fees
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["proposals_by_proposer", senderAddress],
       });
-      showNotification("default", "Proposta creata con successo!");
+      showNotification("default", "Proposal created successfully!");
     },
     onError: (err) => {
       showNotification("destructive", err.message);
@@ -85,11 +82,7 @@ export const useAskToJoinProposal = (
 ) => {
   return useMutation({
     mutationFn: async () => {
-      console.log("qui", senderAddress);
-      console.log("qui", proposal_id);
-      //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
-
       const cosmwasmClient: SigningCosmWasmClient | null =
         await SigningCosmWasmClient.connectWithSigner(
           JUNO_TESTNET_RPC,
@@ -127,7 +120,7 @@ export const useAskToJoinProposal = (
       }
     },
     onSuccess: () => {
-      showNotification("default", "Richiesta inviata con successo!");
+      showNotification("default", "Request sent successfully!");
     },
     onError: (err) => {
       showNotification("destructive", err.message);
@@ -186,9 +179,9 @@ export const useActionToProposal = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["proposals_by_proposer", senderAddress],
+        queryKey: ["voters", proposal_id],
       });
-      showNotification("default", "Operazione eseguita con successo!");
+      showNotification("default", "Operation performed successfully!");
     },
     onError: (err) => {
       showNotification("destructive", err.message);
@@ -216,9 +209,9 @@ export const useVoteProposal = (
         );
 
       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
+      // Access store status
       const { voting_fee } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
+      // Find the fee required for this transaction (if applicable)
       const real_fee = {
         amount: [
           {
@@ -242,7 +235,6 @@ export const useVoteProposal = (
           msg,
           real_fee
         );
-        // console.table(result);
         return result;
       }
     },
@@ -253,7 +245,7 @@ export const useVoteProposal = (
       queryClient.invalidateQueries({
         queryKey: ["voters", proposal_id],
       });
-      showNotification("default", "Votazione eseguita con successo!");
+      showNotification("default", "Vote accepted!");
     },
     onError: (err) => {
       let startIndex = err.message.indexOf("message index: 0:");
@@ -269,9 +261,7 @@ export const useVoteProposal = (
 export const useCloseProposal = (senderAddress: string | undefined) => {
   return useMutation({
     mutationFn: async (proposal_id: number) => {
-      //  return;
       const offlineSigner: OfflineSigner = window.getOfflineSigner!(CHAIN_ID);
-
       const cosmwasmClient: SigningCosmWasmClient | null =
         await SigningCosmWasmClient.connectWithSigner(
           JUNO_TESTNET_RPC,
@@ -279,9 +269,9 @@ export const useCloseProposal = (senderAddress: string | undefined) => {
         );
 
       if (!cosmwasmClient) throw new Error("Cosmwasm client is not connected");
-      // Accedi allo stato dello store
+      // Access store status
       const { voting_fee } = useStore.getState();
-      // Trova la commissione necessaria per questa transazione (se applicabile)
+      // Find the fee required for this transaction (if applicable)
       const real_fee = {
         amount: [
           {
@@ -303,7 +293,6 @@ export const useCloseProposal = (senderAddress: string | undefined) => {
           msg,
           real_fee
         );
-        // console.table(result);
         return result;
       }
     },

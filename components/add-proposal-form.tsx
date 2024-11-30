@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CalendarIcon, Plus, Trash } from "lucide-react"; // Icone per aggiungere/rimuovere opzioni
+import { CalendarIcon, Plus, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 import MaxWidthWrapper from "./max-width-wrapper";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -26,7 +26,7 @@ export const ProposalForm = () => {
   const form = useForm<ProposalFormValues>({
     resolver: zodResolver(proposalSchema),
     defaultValues: {
-      option: [""], // Una opzione iniziale
+      option: [""],
       title: "",
       description: "",
       expires: "",
@@ -35,7 +35,7 @@ export const ProposalForm = () => {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "option", // Nome del campo dinamico
+    name: "option",
   });
   const { wallet } = useWallet();
   const { mutate: createProposal, isPending: creating } = useCreateProposal(
@@ -49,17 +49,14 @@ export const ProposalForm = () => {
       console.error("Validation error", parsed.error);
       return;
     }
-
     const formattedExpires = new Date(data.expires).toISOString();
     const f = new Date(formattedExpires).getTime() * 1_000_000;
     const string_date = String(f);
-
     const initMsg = {
       ...data,
       expires: { at_time: string_date },
     };
     createProposal({ initMsg });
-    // Invia i dati al contratto (ad esempio tramite CosmJS)
   };
   return (
     <MaxWidthWrapper>
@@ -101,16 +98,16 @@ export const ProposalForm = () => {
                 <FormControl>
                   <Input
                     placeholder={`Option ${index + 1}`}
-                    value={form.watch(`option.${index}`)} // Legge dinamicamente il valore
+                    value={form.watch(`option.${index}`)}
                     onChange={
-                      (e) => form.setValue(`option.${index}`, e.target.value) // Imposta il valore
+                      (e) => form.setValue(`option.${index}`, e.target.value)
                     }
                   />
                 </FormControl>
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => remove(index)} // Rimuove l'opzione
+                  onClick={() => remove(index)} 
                   className="text-red-500"
                 >
                   <Trash className="w-4 h-4" />
@@ -120,7 +117,7 @@ export const ProposalForm = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => append("")} // Aggiunge una nuova opzione vuota
+              onClick={() => append("")}
               className="mt-2"
             >
               <Plus className="w-4 h-4 mr-1" /> Add Option
@@ -148,7 +145,7 @@ export const ProposalForm = () => {
                         )}
                       >
                         {field.value ? (
-                          format(new Date(field.value), "PPP") // Mostra la data formattata
+                          format(new Date(field.value), "PPP") // Show the formatted date
                         ) : (
                           <span>Pick a date</span>
                         )}
@@ -162,9 +159,9 @@ export const ProposalForm = () => {
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={
                         (date) =>
-                          form.setValue("expires", date?.toISOString() || "") // Imposta la data come stringa ISO
+                          form.setValue("expires", date?.toISOString() || "") // Set date as ISO string
                       }
-                      disabled={(date) => date < new Date()} // Disabilita date passate
+                      disabled={(date) => date < new Date()} // Disable past dates
                       initialFocus
                     />
                   </PopoverContent>
@@ -179,79 +176,10 @@ export const ProposalForm = () => {
             className="bg-blue-500 text-white"
             disabled={creating}
           >
-            {creating ? "Creando la Proposta..." : "Crea"}
+            {creating ? "Creating the Proposal..." : "Create"}
           </Button>
         </form>
       </Form>
-      {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block font-medium">Title</label>
-          <Input placeholder="Enter the title" {...register("title")} />
-          {errors.title && (
-            <p className="text-red-500 text-sm">{errors.title.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block font-medium">Description</label>
-          <Textarea
-            placeholder="Enter the description"
-            {...register("description")}
-          />
-          {errors.description && (
-            <p className="text-red-500 text-sm">{errors.description.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block font-medium">Options</label>
-          {fields.map((field, index) => (
-            <div key={field.id} className="flex items-center space-x-2">
-              <Input
-                placeholder={`Option ${index + 1}`}
-                {...register(`option.${index}` as const)}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => remove(index)}
-                className="text-red-500"
-              >
-                <Trash className="w-4 h-4" />
-              </Button>
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => append("")} // Aggiunge una nuova opzione vuota
-            className="mt-2"
-          >
-            <Plus className="w-4 h-4 mr-1" /> Add Option
-          </Button>
-          {errors.option && (
-            <p className="text-red-500 text-sm">{errors.option.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block font-medium">
-            Expiration (Date and Time)
-          </label>
-          <Input
-            type="datetime-local"
-            {...register("expires")}
-            className="border border-gray-300 rounded p-2"
-          />
-          {errors.expires && (
-            <p className="text-red-500 text-sm">{errors.expires.message}</p>
-          )}
-        </div>
-
-        <Button type="submit" className="bg-blue-500 text-white">
-          Submit
-        </Button>
-      </form> */}
     </MaxWidthWrapper>
   );
 };
