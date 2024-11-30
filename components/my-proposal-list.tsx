@@ -52,23 +52,26 @@ export default function MyProposalList({
                 proposal.status === "open" ? "text-green-600" : "text-red-600"
               }`}
             >
-              {proposal.status === "open" ? "Open" : "Closed"}
+              {proposal.status === "open"
+                ? "Open"
+                : proposal.winner == null
+                ? "Expired"
+                : "Closed"}
             </span>
           </p>
           {proposal.winner && (
             <p className="text-sm text-gray-700">
-              Winner:{" "}
-              <span className="font-semibold">{proposal.winner}</span>
+              Winner: <span className="font-semibold">{proposal.winner}</span>
             </p>
           )}
           <div className="flex justify-between items-center mt-4 gap-3">
-          {proposal.status === "open"  && (
-            <button
-              onClick={() => setSelectedProposal(proposal)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Manage Voters
-            </button>
+            {proposal.status === "open" && (
+              <button
+                onClick={() => setSelectedProposal(proposal)}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Manage Voters
+              </button>
             )}
             {proposal.winner === null && (
               <button
