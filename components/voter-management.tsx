@@ -41,8 +41,8 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
     setSelectedToRemove(
       (prev) =>
         prev.includes(voter)
-          ? prev.filter((v) => v !== voter) // Rimuove se già selezionato
-          : [...prev, voter] // Aggiunge se non è selezionato
+          ? prev.filter((v) => v !== voter) // Remove if already selected
+          : [...prev, voter] // Adds if not selected
     );
   };
 
@@ -51,9 +51,16 @@ export default function VoterManagement({ proposalId }: VoterManagementProps) {
       add: selectedToAdd,
       rmv: selectedToRemove,
     };
-    actionToProposal(
-      { voters }
-    );
+    actionToProposal( { voters }, {
+      onSuccess: () => {
+        setSelectedToAdd([]);
+        setSelectedToRemove([]);
+      },
+      onError: () => {
+        setSelectedToAdd([]);
+        setSelectedToRemove([]);
+      },
+    });
   };
 
   if (queryVotersLoading) return <div>Loading voters...</div>;

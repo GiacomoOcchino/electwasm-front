@@ -70,7 +70,7 @@ export default function MyProposalList({
               Manage Voters
             </button>
             )}
-            {proposal.status === "open" && proposal.winner === null && (
+            {proposal.winner === null && (
               <button
                 onClick={() => handleCloseProposal(proposal.id)}
                 disabled={closing}
