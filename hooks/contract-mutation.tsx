@@ -3,12 +3,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import useStore from "@/store/store";
+import { queryClient } from "@/providers/tanstack";
 
 export const useCreateProposal = (
   senderAddress: string | undefined,
   showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ initMsg }: { initMsg: object }) => {
       //   console.table('qui',initMsg);
@@ -139,8 +139,6 @@ export const useActionToProposal = (
   proposal_id: number,
   showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({
       voters,
@@ -203,8 +201,6 @@ export const useVoteProposal = (
   proposal_id: number,
   showNotification: (type: "default" | "destructive", message: string) => void
 ) => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (vote: string) => {
       console.log("qui", vote);
@@ -253,6 +249,9 @@ export const useVoteProposal = (
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["running", proposal_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["voters", proposal_id],
       });
       showNotification("default", "Votazione eseguita con successo!");
     },
